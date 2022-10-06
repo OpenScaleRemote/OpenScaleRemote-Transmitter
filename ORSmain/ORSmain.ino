@@ -6,16 +6,12 @@
 RF24 radio(7, 8);
 uint8_t address[][6] = {"00001"};
 
-int potValue = 0;
-int PWMValue = 90;
+//Array für Kanal-Daten
+int channelData[16][2] = {};  //potValue, PWMValue
 
-//Moving Average Filter
+//Array für Moving Average Filter
 #define WINDOW_SIZE 10
-int INDEX = 0;
-int VALUE = 0;
-int SUM = 0;
-int READINGS[WINDOW_SIZE];
-int AVERAGED = 0;
+int mafData[16][5] = {};  //INDEX, VALUE, SUM, READINGS[WINDOW_SIZE], AVERAGED
 
 void setup() {
   Serial.begin(115200);
