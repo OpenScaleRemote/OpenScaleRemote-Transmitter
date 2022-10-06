@@ -2,6 +2,8 @@
 # include "printf.h"
 # include "RF24.h"
 
+//########## objects, arrays, variabeles ##########
+
 //RF24
 RF24 radio(7, 8);
 uint8_t address[][6] = {"00001"};
@@ -13,6 +15,14 @@ int channelData[16][2] = {};  //potValue, PWMValue
 #define WINDOW_SIZE 10
 int mafData[16][5] = {};  //INDEX, VALUE, SUM, READINGS[WINDOW_SIZE], AVERAGED
 
+
+//########## methods ##########
+
+int readAll() {
+  for (i=0; i<16; i++) {
+    channelData[i][0] = adc_read();
+  }
+}
 void setup() {
   Serial.begin(115200);
   while (!Serial) {
