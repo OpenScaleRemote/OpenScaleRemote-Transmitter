@@ -1,12 +1,20 @@
+//######################################
+//########## OpenRemoteSender ##########
+//######################################
+
+//########## librarys ##########
 # include <SPI.h>
 # include "printf.h"
 # include "RF24.h"
+# include <MCP3XXX.h>
 
 //########## objects, arrays, variabeles ##########
-
 //RF24
 RF24 radio(7, 8);
 uint8_t address[][6] = {"00001"};
+
+//MCP3008
+MCP3008 adc1;
 
 //Array für Kanal-Daten
 int channelData[16][2] = {};  //potValue, PWMValue
@@ -17,12 +25,13 @@ int mafData[16][5] = {};  //INDEX, VALUE, SUM, READINGS[WINDOW_SIZE], AVERAGED
 
 
 //########## methods ##########
-
 int readAll() {
   for (i=0; i<16; i++) {
     channelData[i][0] = adc_read();
   }
 }
+
+//########## setup code ##########
 void setup() {
   Serial.begin(115200);
   while (!Serial) {
@@ -31,7 +40,12 @@ void setup() {
   adc_init();
   adc_gpio_init(26);
   adc_select_input(0);
-  
+
+  if (!adc1.begin()) {
+    Serial.println(F("adc1 hardware is not responding!!"));
+    while (1) {
+      }
+  }
   if (!radio.begin()) {
     Serial.println(F("radio hardware is not responding!!"));
     while (1) {
@@ -43,6 +57,7 @@ void setup() {
   radio.stopListening();
 }
 
+//########## loop code ##########
 void loop() {
   Serial.println(F("Start the loop!"));
 
