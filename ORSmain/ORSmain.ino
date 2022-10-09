@@ -21,7 +21,7 @@ int channelData[16][2] = {};  //potValue, PWMValue
 
 //Array für Moving Average Filter
 #define WINDOW_SIZE 10
-int mafData[16][5] = {};  //INDEX, VALUE, SUM, READINGS[WINDOW_SIZE], AVERAGED
+int mafData[10][5] = {};  //INDEX, VALUE, SUM, READINGS[WINDOW_SIZE], AVERAGED
 
 
 //########## methods ##########
