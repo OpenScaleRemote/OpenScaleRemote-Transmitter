@@ -9,6 +9,7 @@
 # include <MCP3XXX.h>
 
 //########## objects, arrays, variabeles ##########
+bool blink = LOW;
 //RF24
 RF24 radio(7, 8);
 uint8_t address[][6] = {"00001"};
@@ -59,9 +60,9 @@ void linearMapping() {
 
 //########## setup code ##########
 void setup() {
+  pinMode(25, OUTPUT);
   Serial.begin(115200);
-  while (!Serial) {
-  }
+  delay(1000);
   
   adc_init();
   adc_gpio_init(26);
@@ -74,7 +75,7 @@ void setup() {
 //      }
 //  }
   if (!radio.begin()) {
-    Serial.println(F("radio hardware is not responding!!"));
+//    Serial.println(F("radio hardware is not responding!!"));
     while (1) {
       }
   }
@@ -86,7 +87,9 @@ void setup() {
 
 //########## loop code ##########
 void loop() {
-  Serial.println(F("Start the loop!"));
+  digitalWrite(25, blink);
+  blink = !blink;
+//  Serial.println(F("Start the loop!"));
 
   //Daten aus ADC einlesen
   readAll(2);
@@ -104,9 +107,9 @@ void loop() {
   
   radio.write(&servoData, sizeof(servoData));
 //  Serial.println(AVERAGED);
-  Serial.print("sD0: ");
-  Serial.print(servoData.sD0);
-  Serial.print(" sD1: ");
-  Serial.println(servoData.sD1);
-  //delay(10);
+//  Serial.print("sD0: ");
+//  Serial.print(servoData.sD0);
+//  Serial.print(" sD1: ");
+//  Serial.println(servoData.sD1);
+  delay(10);
 }
