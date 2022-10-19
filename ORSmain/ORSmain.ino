@@ -19,8 +19,24 @@ uint8_t address[][6] = {"00001"};
 MCP3008 adc1;
 MCP3008 adc2;
 
-//Array für Kanal-Daten
-int channelData[16][7] = {};  //analogInputData, linearMappedData, filteredData, lowerLimit, upperLimit, zeroPoint, deadZone
+//Array for channel data
+//analogInputData, linearMappedData, filteredData, lowerLimit, upperLimit, zeroPoint, deadZone
+int channelData[16][7] = {{0,90,90,0,180,90,0},
+                          {0,90,90,0,180,90,0},
+                          {0,90,90,0,180,90,0},
+                          {0,90,90,0,180,90,0},
+                          {0,90,90,0,180,90,0},
+                          {0,90,90,0,180,90,0},
+                          {0,90,90,0,180,90,0},
+                          {0,90,90,0,180,90,0},
+                          {0,90,90,0,180,90,0},
+                          {0,90,90,0,180,90,0},
+                          {0,90,90,0,180,90,0},
+                          {0,90,90,0,180,90,0},
+                          {0,90,90,0,180,90,0},
+                          {0,90,90,0,180,90,0},
+                          {0,90,90,0,180,90,0},
+                          {0,90,90,0,180,90,0}};
 struct ServoData {
   byte sD0=0;
   byte sD1=0;
@@ -39,30 +55,32 @@ struct ServoData {
   byte sD14=0;
   byte sD15=0;
 };
-
 ServoData servoData;
 
 //Array für Moving Average Filter
-#define WINDOW_SIZE 10
-int mafData[10][WINDOW_SIZE+3] = {};  // INDEX (0), VALUE (1), SUM (2), READINGS[WINDOW_SIZE] (3-WINDOW_SIZE-1)
+#define windowSize 10
+int mafData[10][windowSize+2] = {};  // index (0), sum (1), readings[windowSize] (3-windowSize-1)
+
 
 //########## methods ##########
-int linearMapping(int a) {
-  int b;
-  return b = map(a, 0, 1023, 0, 180);
+//linearMapping(int input, int lowerLimit, int upperLimit, int zeroLoint, int deadZone)
+int linearMapping(int a, int b, int c, int d, int e) {
+  int z;
+  return z = map(a, 0, 1023, b, c);
 }
 
-int mafFiltering(int a) {
-  int b;
-  mafData[a][2] = mafData[a][2] - mafData[a][mafData[a][0]];       // Remove the oldest entry from the sum
-  mafData[a][mafData[a][0]] = channelData[a][1];                        // Add the newest reading to the window
-  mafData[a][2] = mafData[a][2] + channelData[a][1];                 // Add the newest reading to the sum
-  mafData[a][0] = mafData[a][0]+1;                              // Increment the index, and wrap to 0 if it exceeds the window size
-  if(mafData[a][0] >= WINDOW_SIZE+3) {
-    mafData[a][0] = 3;
+int mafFiltering(int b, int a) {
+  int z;
+  mafData[a][1] = mafData[a][1] - mafData[a][mafData[a][0]];        // Remove the oldest entry from the sum
+  mafData[a][mafData[a][0]] = b;                                    // Add the newest reading to the window
+  mafData[a][1] = mafData[a][1] + b;                                // Add the newest reading to the sum
+  mafData[a][0] = mafData[a][0]+1;                                  // Increment the index, and wrap to 0 if it exceeds the window size
+  if(mafData[a][0] >= windowSize+2) {
+    mafData[a][0] = 2;
   }
-  return b = mafData[a][2] / WINDOW_SIZE;           // Divide the sum of the window by the window size for the result
+  return z = mafData[a][1] / windowSize;                            // Divide the sum of the window by the window size for the result
 }
+
 
 //########## setup code ##########
 void setup() {
@@ -80,18 +98,23 @@ void setup() {
   radio.setPayloadSize(sizeof(servoData));
   radio.openWritingPipe(address[0]);
   radio.stopListening();
-
+  
+  
+  
+  //preparing the index in mafData
   for(int i=0; i<16; i++) {
-    mafData[i][0] = 4;
+    mafData[i][0] = 2;
   }
 }
 
+
 //########## loop code ##########
 void loop() {
+  //Blink the onboard led
   digitalWrite(25, blink);
   blink = !blink;
 
-  //Daten aus ADC einlesen
+  //Read data from both adcs
   for (int i=0; i<8; i++) {
     channelData[i][0] = adc1.analogRead(i);
   }
@@ -99,30 +122,33 @@ void loop() {
     channelData[i+8][0] = adc2.analogRead(i);
   }
 
-  //ADC Wert auf PWM Bereich mappen
+  //Mapping data from analog range to servo range with limits, zeropoint and deadzone
   for(int i=0; i<2; i++) {
-    channelData[i][1] = linearMapping(channelData[i][0]);
+    channelData[i][1] = linearMapping(channelData[i][0], channelData[i][3], channelData[i][4], 0, 0);
   }
 
   //Moving Average Filter
   for(int i=0; i<2; i++) {
-    mafFiltering(i);
+    channelData[i][2] = mafFiltering(channelData[i][1], i);
   }
 
+  //Filling the servoData struct
   servoData.sD0 = mafData[0][3];
   servoData.sD1 = mafData[1][3];
   
+  //Sending data to the radio
   radio.write(&servoData, sizeof(servoData));
 
+  //Debuggingzone
   for(int i=0; i<10; i++) {
     Serial.print("Channel Data [");
     Serial.print(i);
-    Serial.print("]: ");
-    Serial.println(channelData[i][0]);
+    Serial.print("][1]: ");
+    Serial.println(channelData[i][1]);
   }
-  Serial.print("sD0: ");
-  Serial.print(servoData.sD0);
-  Serial.print(" sD1: ");
-  Serial.println(servoData.sD1);
-//  delay(50);
+//  Serial.print("sD0: ");
+//  Serial.print(servoData.sD0);
+//  Serial.print(" sD1: ");
+//  Serial.println(servoData.sD1);
+  delay(50);
 }
