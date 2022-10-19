@@ -123,18 +123,32 @@ void loop() {
   }
 
   //Mapping data from analog range to servo range with limits, zeropoint and deadzone
-  for(int i=0; i<2; i++) {
+  for(int i=0; i<10; i++) {
     channelData[i][1] = linearMapping(channelData[i][0], channelData[i][3], channelData[i][4], 0, 0);
   }
 
   //Moving Average Filter
-  for(int i=0; i<2; i++) {
+  for(int i=0; i<10; i++) {
     channelData[i][2] = mafFiltering(channelData[i][1], i);
   }
 
   //Filling the servoData struct
-  servoData.sD0 = mafData[0][3];
-  servoData.sD1 = mafData[1][3];
+  servoData.sD0 = channelData[0][2];
+  servoData.sD1 = channelData[1][2];
+  servoData.sD2 = channelData[2][2];
+  servoData.sD3 = channelData[3][2];
+  servoData.sD4 = channelData[4][2];
+  servoData.sD5 = channelData[5][2];
+  servoData.sD6 = channelData[6][2];
+  servoData.sD7 = channelData[7][2];
+  servoData.sD8 = channelData[8][2];
+  servoData.sD9 = channelData[9][2];
+  servoData.sD10 = channelData[10][2];
+  servoData.sD11 = channelData[11][2];
+  servoData.sD12 = channelData[12][2];
+  servoData.sD13 = channelData[13][2];
+  servoData.sD14 = channelData[14][2];
+  servoData.sD15 = channelData[15][2];
   
   //Sending data to the radio
   radio.write(&servoData, sizeof(servoData));
@@ -143,12 +157,12 @@ void loop() {
   for(int i=0; i<10; i++) {
     Serial.print("Channel Data [");
     Serial.print(i);
-    Serial.print("][1]: ");
-    Serial.println(channelData[i][1]);
+    Serial.print("][2]: ");
+    Serial.println(channelData[i][2]);
   }
-//  Serial.print("sD0: ");
-//  Serial.print(servoData.sD0);
-//  Serial.print(" sD1: ");
-//  Serial.println(servoData.sD1);
+  Serial.print("sD0: ");
+  Serial.print(servoData.sD0);
+  Serial.print(" sD1: ");
+  Serial.println(servoData.sD1);
   delay(50);
 }
