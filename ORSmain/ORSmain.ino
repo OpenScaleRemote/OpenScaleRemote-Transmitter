@@ -20,7 +20,7 @@ MCP3008 adc1;
 MCP3008 adc2;
 
 //Array for channel data
-//analogInputData, linearMappedData, filteredData, lowerLimit, upperLimit, zeroPoint, deadZone
+//analogInputData, mappedData, filteredData, lowerLimit, upperLimit, zeroPoint, deadZone
 int channelData[16][7] = {{0,90,90,0,180,90,0},
                           {0,90,90,0,180,90,0},
                           {0,90,90,0,180,90,0},
