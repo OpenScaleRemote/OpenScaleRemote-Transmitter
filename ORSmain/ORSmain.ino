@@ -21,8 +21,8 @@ MCP3008 adc2;
 
 //Array for channel data
 //analogInputData, mappedData, filteredData, lowerLimit, upperLimit, zeroPoint, deadZone
-int channelData[16][7] = {{0,90,90,0,180,90,0},
-                          {0,90,90,0,180,90,0},
+int channelData[16][7] = {{0,90,90,135,30,90,0},
+                          {0,90,90,120,60,90,0},
                           {0,90,90,0,180,90,0},
                           {0,90,90,0,180,90,0},
                           {0,90,90,0,180,90,0},
@@ -58,7 +58,7 @@ struct ServoData {
 ServoData servoData;
 
 //Array für Moving Average Filter
-#define windowSize 10
+#define windowSize 5
 int mafData[10][windowSize+2] = {};  // index (0), sum (1), readings[windowSize] (3-windowSize-1)
 
 
@@ -161,36 +161,36 @@ void loop() {
     Serial.println(channelData[i][2]);
   }
   Serial.print("sD0: ");
-  Serial.println(servoData.sD0);
+  Serial.print(servoData.sD0);
   Serial.print(" sD1: ");
-  Serial.println(servoData.sD1);
+  Serial.print(servoData.sD1);
   Serial.print(" sD2: ");
-  Serial.println(servoData.sD2);
+  Serial.print(servoData.sD2);
   Serial.print(" sD3: ");
-  Serial.println(servoData.sD3);
+  Serial.print(servoData.sD3);
   Serial.print(" sD4: ");
-  Serial.println(servoData.sD4);
+  Serial.print(servoData.sD4);
   Serial.print(" sD5: ");
-  Serial.println(servoData.sD5);
+  Serial.print(servoData.sD5);
   Serial.print(" sD6: ");
-  Serial.println(servoData.sD6);
+  Serial.print(servoData.sD6);
   Serial.print(" sD7: ");
-  Serial.println(servoData.sD7);
+  Serial.print(servoData.sD7);
   Serial.print(" sD8: ");
-  Serial.println(servoData.sD8);
+  Serial.print(servoData.sD8);
   Serial.print(" sD9: ");
   Serial.println(servoData.sD9);
   Serial.print(" sD10: ");
-  Serial.println(servoData.sD10);
+  Serial.print(servoData.sD10);
   Serial.print(" sD11: ");
-  Serial.println(servoData.sD11);
+  Serial.print(servoData.sD11);
   Serial.print(" sD12: ");
-  Serial.println(servoData.sD12);
+  Serial.print(servoData.sD12);
   Serial.print(" sD13: ");
-  Serial.println(servoData.sD13);
+  Serial.print(servoData.sD13);
   Serial.print(" sD14: ");
-  Serial.println(servoData.sD14);
+  Serial.print(servoData.sD14);
   Serial.print(" sD15: ");
   Serial.println(servoData.sD15);
-  delay(50);
+  //delay(50);
 }
