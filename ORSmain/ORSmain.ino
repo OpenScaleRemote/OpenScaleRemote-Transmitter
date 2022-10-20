@@ -161,8 +161,36 @@ void loop() {
     Serial.println(channelData[i][2]);
   }
   Serial.print("sD0: ");
-  Serial.print(servoData.sD0);
+  Serial.println(servoData.sD0);
   Serial.print(" sD1: ");
   Serial.println(servoData.sD1);
+  Serial.print(" sD2: ");
+  Serial.println(servoData.sD2);
+  Serial.print(" sD3: ");
+  Serial.println(servoData.sD3);
+  Serial.print(" sD4: ");
+  Serial.println(servoData.sD4);
+  Serial.print(" sD5: ");
+  Serial.println(servoData.sD5);
+  Serial.print(" sD6: ");
+  Serial.println(servoData.sD6);
+  Serial.print(" sD7: ");
+  Serial.println(servoData.sD7);
+  Serial.print(" sD8: ");
+  Serial.println(servoData.sD8);
+  Serial.print(" sD9: ");
+  Serial.println(servoData.sD9);
+  Serial.print(" sD10: ");
+  Serial.println(servoData.sD10);
+  Serial.print(" sD11: ");
+  Serial.println(servoData.sD11);
+  Serial.print(" sD12: ");
+  Serial.println(servoData.sD12);
+  Serial.print(" sD13: ");
+  Serial.println(servoData.sD13);
+  Serial.print(" sD14: ");
+  Serial.println(servoData.sD14);
+  Serial.print(" sD15: ");
+  Serial.println(servoData.sD15);
   delay(50);
 }
