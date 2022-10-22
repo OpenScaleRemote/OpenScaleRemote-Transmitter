@@ -12,31 +12,50 @@
 bool blink = LOW;
 
 //RF24
-RF24 radio(7, 8);
+RF24 radio(20, 17);
 uint8_t address[][6] = {"00001"};
 
 //MCP3008
 MCP3008 adc1;
 MCP3008 adc2;
 
-//Array for channel data
-//analogInputData, mappedData, filteredData, lowerLimit, upperLimit, zeroPoint, deadZone
-int channelData[16][7] = {{0,90,90,135,30,90,0},
-                          {0,90,90,120,60,90,0},
-                          {0,90,90,0,180,90,0},
-                          {0,90,90,0,180,90,0},
-                          {0,90,90,0,180,90,0},
-                          {0,90,90,0,180,90,0},
-                          {0,90,90,0,180,90,0},
-                          {0,90,90,0,180,90,0},
-                          {0,90,90,0,180,90,0},
-                          {0,90,90,0,180,90,0},
-                          {0,90,90,0,180,90,0},
-                          {0,90,90,0,180,90,0},
-                          {0,90,90,0,180,90,0},
-                          {0,90,90,0,180,90,0},
-                          {0,90,90,0,180,90,0},
-                          {0,90,90,0,180,90,0}};
+//array for control data
+//channelInputData, channelLowerLimit, channelUpperLimit, channelZeroPoint, channelDeadZone, channelFiltered
+int controlData[16][6] = {{0,0,1023,511,5,0},
+                          {0,0,1023,511,5,0},
+                          {0,0,1023,511,5,0},
+                          {0,0,1023,511,5,0},
+                          {0,0,1023,511,5,0},
+                          {0,0,1023,511,5,0},
+                          {0,0,1023,511,5,0},
+                          {0,0,1023,511,5,0},
+                          {0,0,1023,511,5,0},
+                          {0,0,1023,511,5,0},
+                          {0,0,1023,511,5,0},
+                          {0,0,1023,511,5,0},
+                          {0,0,1023,511,5,0},
+                          {0,0,1023,511,5,0},
+                          {0,0,1023,511,5,0},
+                          {0,0,1023,511,5,0}};
+
+//array for channel data
+//mappedData, servoLowerLimit, servoUpperLimit, servoZeroPoint
+int channelData[16][4] = {{90,135,30,90},
+                          {90,120,60,90},
+                          {90,0,180,90},
+                          {90,0,180,90},
+                          {90,0,180,90},
+                          {90,0,180,90},
+                          {90,0,180,90},
+                          {90,0,180,90},
+                          {90,0,180,90},
+                          {90,0,180,90},
+                          {90,0,180,90},
+                          {90,0,180,90},
+                          {90,0,180,90},
+                          {90,0,180,90},
+                          {90,0,180,90},
+                          {90,0,180,90}};
 struct ServoData {
   byte sD0=0;
   byte sD1=0;
@@ -57,16 +76,20 @@ struct ServoData {
 };
 ServoData servoData;
 
-//Array für Moving Average Filter
+//array for moving average filter
 #define windowSize 5
 int mafData[10][windowSize+2] = {};  // index (0), sum (1), readings[windowSize] (3-windowSize-1)
 
 
 //########## methods ##########
-//linearMapping(int input, int lowerLimit, int upperLimit, int zeroLoint, int deadZone)
-int linearMapping(int a, int b, int c, int d, int e) {
-  int z;
-  return z = map(a, 0, 1023, b, c);
+int linearConverting(int inPut, int channelLowerLimit, int channelUpperLimit, int channelZeroPoint, int channelDeadZone, int servoLowerLimit, int servoUpperLimit, int servoZeroPoint) {
+  if(inPut <= (channelZeroPoint-channelDeadZone)) {
+    return map(inPut, channelLowerLimit, (channelZeroPoint-channelDeadZone), servoLowerLimit, (servoZeroPoint-1));
+  }else if(inPut >= (channelZeroPoint+channelDeadZone)) {
+    return map(inPut, (channelZeroPoint+channelDeadZone), channelUpperLimit, (servoZeroPoint-1), servoUpperLimit);
+  }else {
+    return servoZeroPoint;
+  }
 }
 
 int mafFiltering(int b, int a) {
@@ -84,11 +107,22 @@ int mafFiltering(int b, int a) {
 
 //########## setup code ##########
 void setup() {
+  //GPIO setup
   pinMode(25, OUTPUT);
+  pinMode(0, INPUT_PULLDOWN);
+  pinMode(1, INPUT_PULLDOWN);
+  pinMode(2, INPUT_PULLDOWN);
+  pinMode(3, INPUT_PULLDOWN);
+  pinMode(4, INPUT_PULLDOWN);
+  pinMode(5, INPUT_PULLDOWN);
+  pinMode(6, INPUT_PULLDOWN);
+  pinMode(7, INPUT_PULLDOWN);
+
+  //serial setup
   Serial.begin(115200);
   delay(1000);
-  adc1.begin(9);
-  adc2.begin(6);
+  adc1.begin(21);
+  adc2.begin(22);
   if (!radio.begin()) {
     Serial.println(F("radio hardware is not responding!!"));
     while (1) {
@@ -110,57 +144,91 @@ void setup() {
 
 //########## loop code ##########
 void loop() {
-  //Blink the onboard led
+  //blink the onboard led
   digitalWrite(25, blink);
   blink = !blink;
 
-  //Read data from both adcs
+  //read data from both adcs
   for (int i=0; i<8; i++) {
-    channelData[i][0] = adc1.analogRead(i);
+    controlData[i][0] = adc1.analogRead(i);
   }
   for (int i=0; i<2; i++) {
-    channelData[i+8][0] = adc2.analogRead(i);
+    controlData[i+8][0] = adc2.analogRead(i);
   }
 
-  //Mapping data from analog range to servo range with limits, zeropoint and deadzone
+  //moving average filter
   for(int i=0; i<10; i++) {
-    channelData[i][1] = linearMapping(channelData[i][0], channelData[i][3], channelData[i][4], 0, 0);
+    controlData[i][5] = mafFiltering(controlData[i][0], i);
   }
 
-  //Moving Average Filter
+  //mapping data from analog range to servo range with limits, zeropoint and deadzone
   for(int i=0; i<10; i++) {
-    channelData[i][2] = mafFiltering(channelData[i][1], i);
+    channelData[i][0] = linearConverting(controlData[i][5], controlData[i][1], controlData[i][2], controlData[i][3], controlData[i][4], channelData[i][1], channelData[i][2], channelData[i][3]);
   }
 
-  //Filling the servoData struct
-  servoData.sD0 = channelData[0][2];
-  servoData.sD1 = channelData[1][2];
-  servoData.sD2 = channelData[2][2];
-  servoData.sD3 = channelData[3][2];
-  servoData.sD4 = channelData[4][2];
-  servoData.sD5 = channelData[5][2];
-  servoData.sD6 = channelData[6][2];
-  servoData.sD7 = channelData[7][2];
-  servoData.sD8 = channelData[8][2];
-  servoData.sD9 = channelData[9][2];
-  servoData.sD10 = channelData[10][2];
-  servoData.sD11 = channelData[11][2];
-  servoData.sD12 = channelData[12][2];
-  servoData.sD13 = channelData[13][2];
-  servoData.sD14 = channelData[14][2];
-  servoData.sD15 = channelData[15][2];
+  //read data from 2 phase digital inputs
+  for(int i=0; i<4; i++) {
+    if(digitalRead(i) == HIGH) {
+      channelData[i+10][0] = channelData[i+10][2];
+    }else {
+      channelData[i+10][0] = channelData[i+10][1];
+    }
+  }
+
+  //read data from 3 phase digital inputs
+  if(digitalRead(4) == HIGH && digitalRead(5) == LOW) {
+    channelData[14][0] = channelData[14][2];
+  }else if(digitalRead(4) == LOW && digitalRead(5) == HIGH) {
+    channelData[14][0] = channelData[14][1];
+  }else {
+    channelData[14][0] = channelData[14][3];
+  }
+
+  if(digitalRead(6) == HIGH && digitalRead(7) == LOW) {
+    channelData[15][0] = channelData[15][2];
+  }else if(digitalRead(6) == LOW && digitalRead(7) == HIGH) {
+    channelData[15][0] = channelData[15][1];
+  }else {
+    channelData[15][0] = channelData[15][3];
+  }
   
-  //Sending data to the radio
+  //filling the servoData struct
+  servoData.sD0 = channelData[0][0];
+  servoData.sD1 = channelData[1][0];
+  servoData.sD2 = channelData[2][0];
+  servoData.sD3 = channelData[3][0];
+  servoData.sD4 = channelData[4][0];
+  servoData.sD5 = channelData[5][0];
+  servoData.sD6 = channelData[6][0];
+  servoData.sD7 = channelData[7][0];
+  servoData.sD8 = channelData[8][0];
+  servoData.sD9 = channelData[9][0];
+  servoData.sD10 = channelData[10][0];
+  servoData.sD11 = channelData[11][0];
+  servoData.sD12 = channelData[12][0];
+  servoData.sD13 = channelData[13][0];
+  servoData.sD14 = channelData[14][0];
+  servoData.sD15 = channelData[15][0];
+  
+  //sending data to the radio
   radio.write(&servoData, sizeof(servoData));
 
-  //Debuggingzone
-  for(int i=0; i<10; i++) {
+  //debuggingzone
+  for(int i=0; i<16; i++) {
     Serial.print("Channel Data [");
     Serial.print(i);
-    Serial.print("][2]: ");
-    Serial.println(channelData[i][2]);
+    Serial.print("][0]: ");
+    Serial.println(channelData[i][0]);
   }
-  Serial.print("sD0: ");
+  Serial.println("##########");
+  for(int i=0; i<10; i++) {
+    Serial.print("Control Data [");
+    Serial.print(i);
+    Serial.print("][5]: ");
+    Serial.println(controlData[i][5]);
+  }
+  Serial.println("##########");
+  /*Serial.print("sD0: ");
   Serial.print(servoData.sD0);
   Serial.print(" sD1: ");
   Serial.print(servoData.sD1);
@@ -191,6 +259,6 @@ void loop() {
   Serial.print(" sD14: ");
   Serial.print(servoData.sD14);
   Serial.print(" sD15: ");
-  Serial.println(servoData.sD15);
-  //delay(50);
+  Serial.println(servoData.sD15);*/
+  //delay(10);
 }
