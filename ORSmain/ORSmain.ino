@@ -7,6 +7,7 @@
 # include "printf.h"
 # include "RF24.h"
 # include "MCP3XXX.h"
+# include "SignalProcessing.h"
 
 //########## objects, arrays, variabeles ##########
 bool blink = LOW;
@@ -19,43 +20,9 @@ uint8_t address[][6] = {"00001"};
 MCP3008 adc1;
 MCP3008 adc2;
 
-//array for control data
-//channelInputData, channelLowerLimit, channelUpperLimit, channelZeroPoint, channelDeadZone, channelFiltered
-int controlData[16][6] = {{0,0,1023,511,0,0},
-                          {0,0,1023,511,0,0},
-                          {0,0,1023,511,0,0},
-                          {0,0,1023,511,0,0},
-                          {0,0,1023,511,0,0},
-                          {0,0,1023,511,0,0},
-                          {0,0,1023,511,0,0},
-                          {0,0,1023,511,0,0},
-                          {0,0,1023,511,0,0},
-                          {0,0,1023,511,0,0},
-                          {0,0,1023,511,0,0},
-                          {0,0,1023,511,0,0},
-                          {0,0,1023,511,0,0},
-                          {0,0,1023,511,0,0},
-                          {0,0,1023,511,0,0},
-                          {0,0,1023,511,0,0}};
+SignalProcessing sp;
 
-//array for channel data
-//servoLowerLimit, servoUpperLimit, servoZeroPoint, servoInverse
-int channelData[16][4] = {{0,180,90,0},
-                          {60,120,90,1},
-                          {35,130,70,1},
-                          {0,180,90,0},
-                          {0,180,90,0},
-                          {0,180,90,0},
-                          {0,180,90,0},
-                          {0,180,90,0},
-                          {0,180,90,0},
-                          {0,180,90,0},
-                          {0,180,90,0},
-                          {0,180,90,0},
-                          {0,180,90,0},
-                          {0,180,90,0},
-                          {0,180,90,0},
-                          {0,180,90,0}};
+
 struct ServoData {
   byte sD0=0;
   byte sD1=0;
@@ -82,80 +49,6 @@ int mafData[10][windowSize+2] = {};  // index (0), sum (1), readings[windowSize]
 
 
 //########## methods ##########
-
-int analogLinear(int inputChannel) {
-  switch(channelData[inputChannel][3]) {
-    case 0:
-      if(controlData[inputChannel][5] < (controlData[inputChannel][3]-controlData[inputChannel][4])) {
-        return map(controlData[inputChannel][5], controlData[inputChannel][1], (controlData[inputChannel][3]-controlData[inputChannel][4]), channelData[inputChannel][0], (channelData[inputChannel][2]-1));
-      }else if(controlData[inputChannel][5] > (controlData[inputChannel][3]+controlData[inputChannel][4])) {
-        return map(controlData[inputChannel][5], (controlData[inputChannel][3]+controlData[inputChannel][4]), controlData[inputChannel][2], (channelData[inputChannel][2]-1), channelData[inputChannel][1]);
-      }else {
-        return channelData[inputChannel][2];
-      }
-      break;
-    case 1:
-      if(controlData[inputChannel][5] < (controlData[inputChannel][3]-controlData[inputChannel][4])) {
-        return map(controlData[inputChannel][5], controlData[inputChannel][1], (controlData[inputChannel][3]-controlData[inputChannel][4]), channelData[inputChannel][1], (channelData[inputChannel][2]+1));
-      }else if(controlData[inputChannel][5] > (controlData[inputChannel][3]+controlData[inputChannel][4])) {
-        return map(controlData[inputChannel][5], (controlData[inputChannel][3]+controlData[inputChannel][4]), controlData[inputChannel][2], (channelData[inputChannel][2]-1), channelData[inputChannel][0]);
-      }else {
-        return channelData[inputChannel][2];
-      }
-      break;
-    default:
-      Serial.print("Falscher Wert Servoinvertierung Kanal: ");
-      Serial.println(inputChannel);
-  }
-}
-
-int digital2Way(int referenceChannel, int inputChannel) {
-  switch(channelData[inputChannel][3]) {
-    case 0:
-      if(digitalRead(inputChannel) == HIGH) {
-        return channelData[referenceChannel][1];
-      }else {
-        return channelData[referenceChannel][0];
-      }
-      break;
-    case 1:
-      if(digitalRead(inputChannel) == HIGH) {
-        return channelData[referenceChannel][0];
-      }else {
-        return channelData[referenceChannel][1];
-      }
-      break;
-    default:
-      Serial.print("Falscher Wert Servoinvertierung Kanal: ");
-      Serial.println(referenceChannel);
-  }
-}
-
-int digital3Way(int referenceChannel, int inputChannel) {
-  switch(channelData[inputChannel][3]) {
-    case 0:
-      if(digitalRead(inputChannel) == HIGH && digitalRead(inputChannel+1) == LOW) {
-        return channelData[referenceChannel][1];
-      }else if(digitalRead(inputChannel) == LOW && digitalRead(inputChannel+1) == HIGH) {
-        return channelData[referenceChannel][0];
-      }else {
-        return channelData[referenceChannel][2];
-      }
-      break;
-    case 1:
-      if(digitalRead(inputChannel) == HIGH && digitalRead(inputChannel+1) == LOW) {
-        return channelData[referenceChannel][0];
-      }else if(digitalRead(inputChannel) == LOW && digitalRead(inputChannel+1) == HIGH) {
-        return channelData[referenceChannel][1];
-      }else {
-        return channelData[referenceChannel][2];
-      }
-      break;
-    default:
-      Serial.print("Falscher Wert Servoinvertierung Kanal: ");
-      Serial.println(referenceChannel);
-  }
-}
 
 int mafFiltering(int b, int a) {
   int z;
@@ -215,34 +108,34 @@ void loop() {
 
   //read data from both adcs
   for (int i=0; i<8; i++) {
-    controlData[i][0] = adc1.analogRead(i);
+    sp.controlData[i][0] = adc1.analogRead(i);
   }
   for (int i=0; i<2; i++) {
-    controlData[i+8][0] = adc2.analogRead(i);
+    sp.controlData[i+8][0] = adc2.analogRead(i);
   }
 
   //moving average filter
   for(int i=0; i<10; i++) {
-    controlData[i][5] = mafFiltering(controlData[i][0], i);
+    sp.controlData[i][5] = mafFiltering(sp.controlData[i][0], i);
   }
 
   //mapping data from analog range to servo range with limits, zeropoint, deadzone and invert
-  //servoData.sD0 = analogLinear(0);
-  servoData.sD1 = analogLinear(1);
-  servoData.sD2 = analogLinear(2);
-  //servoData.sD3 = analogLinear(3);
-  //servoData.sD4 = analogLinear(4);
-  //servoData.sD5 = analogLinear(5);
-  //servoData.sD6 = analogLinear(6);
-  //servoData.sD7 = analogLinear(7);
-  //servoData.sD8 = analogLinear(8);
-  //servoData.sD9 = analogLinear(9);
-  //servoData.sD10 = digital2Way(10, 0);
-  //servoData.sD11 = digital2Way(11, 1);
-  //servoData.sD12 = digital2Way(12, 2);
-  //servoData.sD13 = digital2Way(13, 3);
-  //servoData.sD14 = digital3Way(14, 4);
-  //servoData.sD15 = digital3Way(15, 6);
+  //servoData.sD0 = sp.analogLinear(0);
+  servoData.sD1 = sp.analogLinear(1);
+  servoData.sD2 = sp.analogLinear(2);
+  //servoData.sD3 = sp.analogLinear(3);
+  //servoData.sD4 = sp.analogLinear(4);
+  //servoData.sD5 = sp.analogLinear(5);
+  //servoData.sD6 = sp.analogLinear(6);
+  //servoData.sD7 = sp.analogLinear(7);
+  //servoData.sD8 = sp.analogLinear(8);
+  //servoData.sD9 = sp.analogLinear(9);
+  //servoData.sD10 = sp.digital2Way(10, 0);
+  //servoData.sD11 = sp.digital2Way(11, 1);
+  //servoData.sD12 = sp.digital2Way(12, 2);
+  //servoData.sD13 = sp.digital2Way(13, 3);
+  //servoData.sD14 = sp.digital3Way(14, 4);
+  //servoData.sD15 = sp.digital3Way(15, 6);
   
   //sending data to the radio
   radio.write(&servoData, sizeof(servoData));
@@ -252,14 +145,14 @@ void loop() {
     Serial.print("Channel Data [");
     Serial.print(i);
     Serial.print("][0]: ");
-    Serial.println(channelData[i][0]);
+    Serial.println(sp.channelData[i][0]);
   }*/
   Serial.println("##########");
   for(int i=0; i<10; i++) {
     Serial.print("Control Data [");
     Serial.print(i);
     Serial.print("][5]: ");
-    Serial.println(controlData[i][5]);
+    Serial.println(sp.controlData[i][5]);
   }
   Serial.println("##########");
   Serial.print("sD0: ");
