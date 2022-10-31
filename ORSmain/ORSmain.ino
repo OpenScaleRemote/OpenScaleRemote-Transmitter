@@ -39,23 +39,23 @@ int controlData[16][6] = {{0,0,1023,511,0,0},
                           {0,0,1023,511,0,0}};
 
 //array for channel data
-//mappedData, servoLowerLimit, servoUpperLimit, servoZeroPoint
-int channelData[16][4] = {{90,0,180,90},
-                          {90,60,120,90},
-                          {90,30,135,90},
-                          {90,0,180,90},
-                          {90,0,180,90},
-                          {90,0,180,90},
-                          {90,0,180,90},
-                          {90,0,180,90},
-                          {90,0,180,90},
-                          {90,0,180,90},
-                          {90,0,180,90},
-                          {90,0,180,90},
-                          {90,0,180,90},
-                          {90,0,180,90},
-                          {90,0,180,90},
-                          {90,0,180,90}};
+//servoLowerLimit, servoUpperLimit, servoZeroPoint, servoInverse
+int channelData[16][4] = {{0,180,90,0},
+                          {60,120,90,1},
+                          {35,130,70,1},
+                          {0,180,90,0},
+                          {0,180,90,0},
+                          {0,180,90,0},
+                          {0,180,90,0},
+                          {0,180,90,0},
+                          {0,180,90,0},
+                          {0,180,90,0},
+                          {0,180,90,0},
+                          {0,180,90,0},
+                          {0,180,90,0},
+                          {0,180,90,0},
+                          {0,180,90,0},
+                          {0,180,90,0}};
 struct ServoData {
   byte sD0=0;
   byte sD1=0;
@@ -83,41 +83,77 @@ int mafData[10][windowSize+2] = {};  // index (0), sum (1), readings[windowSize]
 
 //########## methods ##########
 
-int analogLinear(int channel) {
-  if(controlData[channel][0] <= (controlData[channel][3]-controlData[channel][4])) {
-    return map(controlData[channel][0], controlData[channel][1], (controlData[channel][3]-controlData[channel][4]), channelData[channel][1], (channelData[channel][3]-1));
-  }else if(controlData[channel][0] >= (controlData[channel][3]+controlData[channel][4])) {
-    return map(controlData[channel][0], (controlData[channel][3]+controlData[channel][4]), controlData[channel][2], (channelData[channel][3]-1), channelData[channel][2]);
-  }else {
-    return controlData[channel][3];
-  }
-}
-
-int analogLinearInverse(int inputChannel) {
-  if(controlData[inputChannel][0] <= (controlData[inputChannel][3]-controlData[inputChannel][4])) {
-    return map(controlData[inputChannel][0], (controlData[inputChannel][3]+controlData[inputChannel][4]), controlData[inputChannel][2], (channelData[inputChannel][3]-1), channelData[inputChannel][2]);
-  }else if(controlData[inputChannel][0] >= (controlData[inputChannel][3]+controlData[inputChannel][4])) {
-    return map(controlData[inputChannel][0], controlData[inputChannel][1], (controlData[inputChannel][3]-controlData[inputChannel][4]), channelData[inputChannel][1], (channelData[inputChannel][3]-1));
-  }else {
-    return controlData[inputChannel][3];
+int analogLinear(int inputChannel) {
+  switch(channelData[inputChannel][3]) {
+    case 0:
+      if(controlData[inputChannel][5] < (controlData[inputChannel][3]-controlData[inputChannel][4])) {
+        return map(controlData[inputChannel][5], controlData[inputChannel][1], (controlData[inputChannel][3]-controlData[inputChannel][4]), channelData[inputChannel][0], (channelData[inputChannel][2]-1));
+      }else if(controlData[inputChannel][5] > (controlData[inputChannel][3]+controlData[inputChannel][4])) {
+        return map(controlData[inputChannel][5], (controlData[inputChannel][3]+controlData[inputChannel][4]), controlData[inputChannel][2], (channelData[inputChannel][2]-1), channelData[inputChannel][1]);
+      }else {
+        return channelData[inputChannel][2];
+      }
+      break;
+    case 1:
+      if(controlData[inputChannel][5] < (controlData[inputChannel][3]-controlData[inputChannel][4])) {
+        return map(controlData[inputChannel][5], controlData[inputChannel][1], (controlData[inputChannel][3]-controlData[inputChannel][4]), channelData[inputChannel][1], (channelData[inputChannel][2]+1));
+      }else if(controlData[inputChannel][5] > (controlData[inputChannel][3]+controlData[inputChannel][4])) {
+        return map(controlData[inputChannel][5], (controlData[inputChannel][3]+controlData[inputChannel][4]), controlData[inputChannel][2], (channelData[inputChannel][2]-1), channelData[inputChannel][0]);
+      }else {
+        return channelData[inputChannel][2];
+      }
+      break;
+    default:
+      Serial.print("Falscher Wert Servoinvertierung Kanal: ");
+      Serial.println(inputChannel);
   }
 }
 
 int digital2Way(int referenceChannel, int inputChannel) {
-  if(digitalRead(inputChannel) == HIGH) {
-      return channelData[referenceChannel][2];
-    }else {
-      return channelData[referenceChannel][1];
-    }
+  switch(channelData[inputChannel][3]) {
+    case 0:
+      if(digitalRead(inputChannel) == HIGH) {
+        return channelData[referenceChannel][1];
+      }else {
+        return channelData[referenceChannel][0];
+      }
+      break;
+    case 1:
+      if(digitalRead(inputChannel) == HIGH) {
+        return channelData[referenceChannel][0];
+      }else {
+        return channelData[referenceChannel][1];
+      }
+      break;
+    default:
+      Serial.print("Falscher Wert Servoinvertierung Kanal: ");
+      Serial.println(referenceChannel);
+  }
 }
 
 int digital3Way(int referenceChannel, int inputChannel) {
-  if(digitalRead(inputChannel) == HIGH && digitalRead(inputChannel+1) == LOW) {
-    return channelData[referenceChannel][2];
-  }else if(digitalRead(inputChannel) == LOW && digitalRead(inputChannel+1) == HIGH) {
-    return channelData[referenceChannel][1];
-  }else {
-    return channelData[referenceChannel][3];
+  switch(channelData[inputChannel][3]) {
+    case 0:
+      if(digitalRead(inputChannel) == HIGH && digitalRead(inputChannel+1) == LOW) {
+        return channelData[referenceChannel][1];
+      }else if(digitalRead(inputChannel) == LOW && digitalRead(inputChannel+1) == HIGH) {
+        return channelData[referenceChannel][0];
+      }else {
+        return channelData[referenceChannel][2];
+      }
+      break;
+    case 1:
+      if(digitalRead(inputChannel) == HIGH && digitalRead(inputChannel+1) == LOW) {
+        return channelData[referenceChannel][0];
+      }else if(digitalRead(inputChannel) == LOW && digitalRead(inputChannel+1) == HIGH) {
+        return channelData[referenceChannel][1];
+      }else {
+        return channelData[referenceChannel][2];
+      }
+      break;
+    default:
+      Serial.print("Falscher Wert Servoinvertierung Kanal: ");
+      Serial.println(referenceChannel);
   }
 }
 
@@ -190,54 +226,23 @@ void loop() {
     controlData[i][5] = mafFiltering(controlData[i][0], i);
   }
 
-  //mapping data from analog range to servo range with limits, zeropoint and deadzone
-  //channel 0:
-    //servoData.sD0 = analogLinear(0);
-    
-  //channel 1:
-    servoData.sD1 = analogLinearInverse(1);
-    
-  //channel 2:
-    servoData.sD2 = analogLinearInverse(2);
-    
-  //channel 3:
-    //servoData.sD3 = analogLinear(3);
-    
-  //channel 4:
-    //servoData.sD4 = analogLinear(4);
-    
-  //channel 5:
-    //servoData.sD5 = analogLinear(5);
-    
-  //channel 6:
-    //servoData.sD6 = analogLinear(6);
-    
-  //channel 7:
-    //servoData.sD7 = analogLinear(7);
-    
-  //channel 8:
-    //servoData.sD8 = analogLinear(8);
-    
-  //channel 9:
-    //servoData.sD9 = analogLinear(9);
-    
-  //channel 10:
-    //servoData.sD10 = digital2Way(10, 0);
-    
-  //channel 11:
-    //servoData.sD11 = digital2Way(11, 1);
-    
-  //channel 12:
-    //servoData.sD12 = digital2Way(12, 2);
-    
-  //channel 13:
-    //servoData.sD13 = digital2Way(13, 3);
-    
-  //channel 14:
-    //servoData.sD14 = digital3Way(14, 4);
-    
-  //channel 15:
-    //servoData.sD15 = digital3Way(15, 6);
+  //mapping data from analog range to servo range with limits, zeropoint, deadzone and invert
+  //servoData.sD0 = analogLinear(0);
+  servoData.sD1 = analogLinear(1);
+  servoData.sD2 = analogLinear(2);
+  //servoData.sD3 = analogLinear(3);
+  //servoData.sD4 = analogLinear(4);
+  //servoData.sD5 = analogLinear(5);
+  //servoData.sD6 = analogLinear(6);
+  //servoData.sD7 = analogLinear(7);
+  //servoData.sD8 = analogLinear(8);
+  //servoData.sD9 = analogLinear(9);
+  //servoData.sD10 = digital2Way(10, 0);
+  //servoData.sD11 = digital2Way(11, 1);
+  //servoData.sD12 = digital2Way(12, 2);
+  //servoData.sD13 = digital2Way(13, 3);
+  //servoData.sD14 = digital3Way(14, 4);
+  //servoData.sD15 = digital3Way(15, 6);
   
   //sending data to the radio
   radio.write(&servoData, sizeof(servoData));
@@ -248,14 +253,14 @@ void loop() {
     Serial.print(i);
     Serial.print("][0]: ");
     Serial.println(channelData[i][0]);
-  }
+  }*/
   Serial.println("##########");
   for(int i=0; i<10; i++) {
     Serial.print("Control Data [");
     Serial.print(i);
     Serial.print("][5]: ");
     Serial.println(controlData[i][5]);
-  }*/
+  }
   Serial.println("##########");
   Serial.print("sD0: ");
   Serial.print(servoData.sD0);
