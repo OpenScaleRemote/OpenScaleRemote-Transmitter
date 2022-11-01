@@ -102,6 +102,7 @@ void setup() {
   for(int i=0; i<16; i++) {
     mafData[i][0] = 2;
 
+  menu.updateMenu();
   }
 }
 

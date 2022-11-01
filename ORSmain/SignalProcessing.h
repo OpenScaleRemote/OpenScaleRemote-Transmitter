@@ -39,6 +39,7 @@ class SignalProcessing {
                               {0,180,90,0},
                               {0,180,90,0}};
   public:
+  void setupSP();
   int analogLinear(int inputChannel);
   int digital2Way(int referenceChannel, int inputChannel);
   int digital3Way(int referenceChannel, int inputChannel);
