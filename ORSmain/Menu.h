@@ -12,9 +12,18 @@ class Menu {
   #define MAGENTA  0xF81F
   #define YELLOW   0xFFE0 
   #define WHITE    0xFFFF
-    int menu = 1;
+  
+  public:
+  int mode = 0;
+  int menu = 2;
 
   public:
-    void constTFT();
+    void setupTFT();
     void updateMenu();
+    void executeAction();
+    void action1();
+    void action2();
+    void action3();
+    void action4();
+    
 };

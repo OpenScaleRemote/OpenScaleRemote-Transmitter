@@ -1,4 +1,5 @@
-#include "Arduino.h"
+# include "Arduino.h"
+
 class SignalProcessing {
   public:
     //array for control data
