@@ -79,17 +79,17 @@ void setup() {
   pinMode(5, INPUT_PULLDOWN);
   pinMode(6, INPUT_PULLDOWN);
   pinMode(7, INPUT_PULLDOWN);
-  pinMode(13, INPUT_PULLDOWN);
-  pinMode(14, INPUT_PULLDOWN);
-  pinMode(15, INPUT_PULLDOWN);
+  //pinMode(13, INPUT_PULLDOWN);
+  //pinMode(14, INPUT_PULLDOWN);
+  //pinMode(15, INPUT_PULLDOWN);
 
   //serial setup
   Serial.begin(115200);
   delay(100);
   adc1.begin(21);
   adc2.begin(22);
-  menu.setupTFT();
   radio.begin();
+  menu.setupTFT();
   delay(100);
   radio.setPALevel(RF24_PA_LOW);
   radio.setPayloadSize(sizeof(servoData));
@@ -100,83 +100,72 @@ void setup() {
   for(int i=0; i<16; i++) {
     mafData[i][0] = 2;
   }
-  menu.menu = 0;
-  menu.updateMenu();
 }
 
 
 //########## loop code ##########
 void loop() {
-  switch(menu.mode) {
-    case 0:
-      //blink the onboard led
-      digitalWrite(25, blink);
-      blink = !blink;
+  //blink the onboard led
+  digitalWrite(25, blink);
+  blink = !blink;
 
-      if(digitalRead(15)) {
-        menu.mode = 1;
-        menu.menu = 2;
-        menu.updateMenu();
-        delay(100);
-        while(digitalRead(15));
-      }
-    
-      //read data from both adcs
-      for(int i=0; i<8; i++) {
-        sp.controlData[i][0] = adc1.analogRead(i);
-      }
-      for(int i=0; i<2; i++) {
-        sp.controlData[i+8][0] = adc2.analogRead(i);
-      }
-    
-      //moving average filter
-      for(int i=0; i<10; i++) {
-        sp.controlData[i][5] = mafFiltering(sp.controlData[i][0], i);
-      }
-    
-      //mapping data from analog range to servo range with limits, zeropoint, deadzone and invert
-      //servoData.sD0 = sp.analogLinear(0);
-      servoData.sD1 = sp.analogLinear(1);
-      servoData.sD2 = sp.analogLinear(2);
-      //servoData.sD3 = sp.analogLinear(3);
-      //servoData.sD4 = sp.analogLinear(4);
-      //servoData.sD5 = sp.analogLinear(5);
-      //servoData.sD6 = sp.analogLinear(6);
-      //servoData.sD7 = sp.analogLinear(7);
-      //servoData.sD8 = sp.analogLinear(8);
-      //servoData.sD9 = sp.analogLinear(9);
-      //servoData.sD10 = sp.digital2Way(10, 0);
-      //servoData.sD11 = sp.digital2Way(11, 1);
-      //servoData.sD12 = sp.digital2Way(12, 2);
-      //servoData.sD13 = sp.digital2Way(13, 3);
-      //servoData.sD14 = sp.digital3Way(14, 4);
-      //servoData.sD15 = sp.digital3Way(15, 6);
-      
-      //sending data to the radio
-      radio.write(&servoData, sizeof(servoData));
-      break;
-      
-    case 1:
-      if(digitalRead(13)) {
-        menu.menu--;
-        menu.updateMenu();
-        delay(100);
-        while(digitalRead(13));
-      }
-      if(digitalRead(14)) {
-        menu.menu++;
-        menu.updateMenu();
-        delay(100);
-        while(digitalRead(14));
-      }
-      if(digitalRead(15)) {
-        menu.executeAction();
-        menu.updateMenu();
-        delay(100);
-        while(digitalRead(15));
-      }
-      break;
+
+  menu.executeMenu();
+
+  //read data from both adcs
+  for(int i=0; i<8; i++) {
+    sp.controlData[i][0] = adc1.analogRead(i);
   }
+  for(int i=0; i<2; i++) {
+    sp.controlData[i+8][0] = adc2.analogRead(i);
+  }
+
+  //moving average filter
+  for(int i=0; i<10; i++) {
+    sp.controlData[i][5] = mafFiltering(sp.controlData[i][0], i);
+  }
+
+  //mapping data from analog range to servo range with limits, zeropoint, deadzone and invert
+  //servoData.sD0 = sp.analogLinear(0);
+  servoData.sD1 = sp.analogLinear(1);
+  servoData.sD2 = sp.analogLinear(2);
+  //servoData.sD3 = sp.analogLinear(3);
+  //servoData.sD4 = sp.analogLinear(4);
+  //servoData.sD5 = sp.analogLinear(5);
+  //servoData.sD6 = sp.analogLinear(6);
+  //servoData.sD7 = sp.analogLinear(7);
+  //servoData.sD8 = sp.analogLinear(8);
+  //servoData.sD9 = sp.analogLinear(9);
+  //servoData.sD10 = sp.digital2Way(10, 0);
+  //servoData.sD11 = sp.digital2Way(11, 1);
+  //servoData.sD12 = sp.digital2Way(12, 2);
+  //servoData.sD13 = sp.digital2Way(13, 3);
+  //servoData.sD14 = sp.digital3Way(14, 4);
+  //servoData.sD15 = sp.digital3Way(15, 6);
+  
+  //sending data to the radio
+  radio.write(&servoData, sizeof(servoData));
+  
+  /*if(digitalRead(13)) {
+    menu.menu--;
+    menu.updateMenu();
+    delay(100);
+    while(digitalRead(13));
+  }
+  if(digitalRead(14)) {
+    menu.menu++;
+    menu.updateMenu();
+    delay(100);
+    while(digitalRead(14));
+  }
+  if(digitalRead(15)) {
+    menu.executeAction();
+    menu.updateMenu();
+    delay(100);
+    while(digitalRead(15));
+  }
+  break;
+
 
 
 
