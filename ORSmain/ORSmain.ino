@@ -14,7 +14,7 @@
 bool blink = LOW;
 
 //RF24
-RF24 radio(20, 17);
+RF24 radio(20, 17); //CE, CSN
 uint8_t address[][6] = {"00001"};
 
 //MCP3008
