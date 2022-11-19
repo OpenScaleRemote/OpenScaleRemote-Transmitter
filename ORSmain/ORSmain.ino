@@ -8,7 +8,6 @@
 # include "RF24.h"
 # include "MCP3XXX.h"
 # include "SignalProcessing.h"
-# include "Menu.h"
 
 //########## objects, arrays, variabeles ##########
 bool blink = LOW;
@@ -23,9 +22,6 @@ MCP3008 adc2;
 
 //SignalProcesing
 SignalProcessing sp;
-
-//Menu
-Menu menu;
 
 struct ServoData {
   byte sD0=0;
@@ -85,7 +81,6 @@ void setup() {
   delay(1000);
   adc1.begin(21);
   adc2.begin(22);
-  menu.constTFT();
   if (!radio.begin()) {
     Serial.println(F("radio hardware is not responding!!"));
     while (1) {
