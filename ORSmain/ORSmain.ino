@@ -2,24 +2,33 @@
 //########## OpenRemoteSender ##########
 //######################################
 
+
 //########## librarys ##########
 # include "SPI.h"
 # include "printf.h"
 # include "RF24.h"
-# include "MCP3XXX.h"
+# include <Adafruit_MCP3008.h>
 # include "SignalProcessing.h"
 # include "Menu.h"
+
+
+//mosi = tx, miso = rx
+# define NRF24_CSN  13
+# define NRF24_CE   20
+# define ADC1_CS    21
+# define ADC2_CS    22
+
 
 //########## variabeles, objects, arrays ##########
 bool blink = LOW;
 
 //RF24
-RF24 radio(20, 17); //CE, CSN
+RF24 radio; //CE, CSN
 uint8_t address[][6] = {"00001"};
 
 //MCP3008
-MCP3008 adc1;
-MCP3008 adc2;
+Adafruit_MCP3008 adc1;
+Adafruit_MCP3008 adc2;
 
 //SignalProcesing
 SignalProcessing sp;
@@ -79,17 +88,14 @@ void setup() {
   pinMode(5, INPUT_PULLDOWN);
   pinMode(6, INPUT_PULLDOWN);
   pinMode(7, INPUT_PULLDOWN);
-  //pinMode(13, INPUT_PULLDOWN);
-  //pinMode(14, INPUT_PULLDOWN);
-  //pinMode(15, INPUT_PULLDOWN);
 
   //serial setup
   Serial.begin(115200);
   delay(100);
-  adc1.begin(21);
-  adc2.begin(22);
-  radio.begin();
   menu.setupTFT();
+  adc1.begin(ADC1_CS, &SPI1);
+  adc2.begin(ADC2_CS, &SPI1);
+  radio.begin(&SPI1, NRF24_CE, NRF24_CSN);
   delay(100);
   radio.setPALevel(RF24_PA_LOW);
   radio.setPayloadSize(sizeof(servoData));
@@ -97,7 +103,7 @@ void setup() {
   radio.stopListening();
   
   //preparing the index in mafData
-  for(int i=0; i<16; i++) {
+  for(int i=0; i<10; i++) {
     mafData[i][0] = 2;
   }
 }
@@ -109,15 +115,12 @@ void loop() {
   digitalWrite(25, blink);
   blink = !blink;
 
-
-  menu.executeMenu();
-
   //read data from both adcs
   for(int i=0; i<8; i++) {
-    sp.controlData[i][0] = adc1.analogRead(i);
+    sp.controlData[i][0] = adc1.readADC(i);
   }
   for(int i=0; i<2; i++) {
-    sp.controlData[i+8][0] = adc2.analogRead(i);
+    sp.controlData[i+8][0] = adc2.readADC(i);
   }
 
   //moving average filter
@@ -126,7 +129,7 @@ void loop() {
   }
 
   //mapping data from analog range to servo range with limits, zeropoint, deadzone and invert
-  //servoData.sD0 = sp.analogLinear(0);
+  servoData.sD0 = sp.analogLinear(0);
   servoData.sD1 = sp.analogLinear(1);
   servoData.sD2 = sp.analogLinear(2);
   //servoData.sD3 = sp.analogLinear(3);
@@ -145,32 +148,18 @@ void loop() {
   
   //sending data to the radio
   radio.write(&servoData, sizeof(servoData));
-  
-  /*if(digitalRead(13)) {
-    menu.menu--;
-    menu.updateMenu();
-    delay(100);
-    while(digitalRead(13));
-  }
-  if(digitalRead(14)) {
-    menu.menu++;
-    menu.updateMenu();
-    delay(100);
-    while(digitalRead(14));
-  }
-  if(digitalRead(15)) {
-    menu.executeAction();
-    menu.updateMenu();
-    delay(100);
-    while(digitalRead(15));
-  }
-  break;
+}
 
 
+//########## setup1 code ##########
+void setup1() {
+  delay(1000);
+}
 
 
-
-
+//########## loop1 code ##########
+void loop1() {
+  menu.executeMenu();
 
   //debuggingzone
   /*for(int i=0; i<16; i++) {
@@ -219,5 +208,5 @@ void loop() {
   Serial.print(servoData.sD14);
   Serial.print(" sD15: ");
   Serial.println(servoData.sD15);
-  //delay(10);
+  delay(100);
 }

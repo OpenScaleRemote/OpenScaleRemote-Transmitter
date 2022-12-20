@@ -17,9 +17,9 @@
 # define TFT_CS    26
 # define TFT_RST   27
 
-# define UP_PIN     13
-# define DOWN_PIN   14
-# define ENTER_PIN  15
+# define UP_PIN     9
+# define DOWN_PIN   10
+# define ENTER_PIN  11
 
 # define FONT_SMALL       FreeSans9pt7b        // font for menus
 # define FONT_EDITTITLE   FreeSans18pt7b            // font for menus
@@ -63,6 +63,8 @@ class Menu {
   public:
     void setupTFT();
     void executeMenu();
+    void updateMenu();
+    void executeAction();
     void processMainMenu();
     void processServoSignalMenu();
 

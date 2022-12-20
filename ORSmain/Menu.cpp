@@ -2,6 +2,7 @@
 # include "Arduino.h"
 # include "Adafruit_GFX.h"
 # include "Adafruit_ILI9341.h"
+# include "SPI.h"
 
 Adafruit_ILI9341 Display = Adafruit_ILI9341(TFT_CS, TFT_DC, TFT_RST);
 
@@ -13,6 +14,7 @@ void Menu::setupTFT() {
   pinMode(UP_PIN, INPUT_PULLDOWN);
   pinMode(DOWN_PIN, INPUT_PULLDOWN);
   pinMode(ENTER_PIN, INPUT_PULLDOWN);
+  delay(100);
   Display.begin();
   Display.setRotation(1);
   
@@ -50,7 +52,7 @@ void Menu::setupTFT() {
   ServoSignalMenu.setItemTextMargins(10, 45, 5);
 
   //processMainMenu();
-  //Display.fillScreen(MENU_BACKGROUND);
+  Display.fillScreen(MENU_BACKGROUND);
 }
 
 void Menu::executeMenu() {
@@ -58,15 +60,26 @@ void Menu::executeMenu() {
     delay(DEBOUNCE);
     while(digitalRead(ENTER_PIN));
     processMainMenu();
-    //Display.fillScreen(MENU_BACKGROUND);
+    Display.fillScreen(MENU_BACKGROUND);
   }
-  Display.fillScreen(MENU_BACKGROUND);
+  //Display.fillScreen(MENU_BACKGROUND);
   Display.setCursor(10, 100);
   Display.setFont(&FONT_TITLE);
   Display.setTextColor(ILI9341_RED, ILI9341_WHITE);
   Display.print(F("Done"));
+  Display.setCursor(10, 100);
+  Display.setFont(&FONT_TITLE);
+  Display.setTextColor(ILI9341_BLUE, ILI9341_BLUE);
+  Display.print(F("Done"));
 }
 
+void Menu::updateMenu() {
+}
+
+void Menu::executeAction() {
+}
+
+  
 void Menu::processMainMenu() {
   int MainMenuOption = 1;
   Display.fillScreen(MENU_BACKGROUND);
