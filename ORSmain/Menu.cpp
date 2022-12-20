@@ -50,8 +50,7 @@ void Menu::setupTFT() {
   ServoSignalMenu.setMenuBarMargins(0, 310, 15, 4);
   ServoSignalMenu.setItemColors(MENU_DISABLE, MENU_HIGHBORDER);
   ServoSignalMenu.setItemTextMargins(10, 45, 5);
-
-  //processMainMenu();
+  
   Display.fillScreen(MENU_BACKGROUND);
 }
 
@@ -62,15 +61,20 @@ void Menu::executeMenu() {
     processMainMenu();
     Display.fillScreen(MENU_BACKGROUND);
   }
-  //Display.fillScreen(MENU_BACKGROUND);
-  Display.setCursor(10, 100);
+  Display.fillScreen(MENU_BACKGROUND);
+  Display.setCursor(10, 30);
   Display.setFont(&FONT_TITLE);
   Display.setTextColor(ILI9341_RED, ILI9341_WHITE);
-  Display.print(F("Done"));
-  Display.setCursor(10, 100);
+  Display.println(F("Homescreen"));
+  Display.println(F("Platzhalter"));
+  delay(100);
+  Display.fillScreen(MENU_BACKGROUND);
+  Display.setCursor(10, 30);
   Display.setFont(&FONT_TITLE);
   Display.setTextColor(ILI9341_BLUE, ILI9341_BLUE);
-  Display.print(F("Done"));
+  Display.println(F("Homescreen"));
+  Display.println(F("Platzhalter"));
+  delay(100);
 }
 
 void Menu::updateMenu() {

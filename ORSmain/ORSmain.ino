@@ -153,7 +153,7 @@ void loop() {
 
 //########## setup1 code ##########
 void setup1() {
-  delay(1000);
+  delay(1500);
 }
 
 
