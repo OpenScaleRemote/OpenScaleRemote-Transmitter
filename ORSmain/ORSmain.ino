@@ -8,13 +8,22 @@
 # include "RF24.h"
 # include "MCP3XXX.h"
 # include "SignalProcessing.h"
+#include <LoRa.h>
 
 //########## objects, arrays, variabeles ##########
 bool blink = LOW;
 
+//RFM96W
+#define rfm95w_mosi 15
+#define rfm95w_miso 12
+#define rfm95w_sck 14
+#define rfm95w_cs 13
+#define rfm95w_reset 20
+int counter = 0;
+
 //RF24
-RF24 radio(20, 17);
-uint8_t address[][6] = {"00001"};
+//RF24 radio(20, 17);
+//uint8_t address[][6] = {"00001"};
 
 //MCP3008
 MCP3008 adc1;
@@ -81,15 +90,16 @@ void setup() {
   delay(1000);
   adc1.begin(21);
   adc2.begin(22);
-  if (!radio.begin()) {
-    Serial.println(F("radio hardware is not responding!!"));
-    while (1) {
-      }
+  Serial.println("LoRa Sender");
+  LoRa.setPins(rfm95w_cs, rfm95w_reset, 2);
+  LoRa.setSPI(SPI1);
+  if (!LoRa.begin(868E6)) {
+    Serial.println("Starting LoRa failed!");
+    while (1);
   }
-  radio.setPALevel(RF24_PA_LOW);
-  radio.setPayloadSize(sizeof(servoData));
-  radio.openWritingPipe(address[0]);
-  radio.stopListening();
+  else {
+    Serial.println("Starting LoRa successfull!");
+  }
   
   
   
@@ -139,7 +149,9 @@ void loop() {
   //servoData.sD15 = sp.digital3Way(15, 6);
   
   //sending data to the radio
-  radio.write(&servoData, sizeof(servoData));
+  LoRa.beginPacket();
+  LoRa.print(servoData);
+  LoRa.endPacket();
 
   //debuggingzone
   /*for(int i=0; i<16; i++) {
