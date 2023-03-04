@@ -2,15 +2,24 @@
 //########## OpenRemoteSender ##########
 //######################################
 
+
 //########## librarys ##########
 # include "SPI.h"
 # include "printf.h"
 # include "RF24.h"
-# include "MCP3XXX.h"
+# include <Adafruit_MCP3008.h>
 # include "SignalProcessing.h"
 # include <LoRa.h>
 
-//########## objects, arrays, variabeles ##########
+
+//mosi = tx, miso = rx
+# define NRF24_CSN  13
+# define NRF24_CE   20
+# define ADC1_CS    21
+# define ADC2_CS    22
+
+
+//########## variabeles, objects, arrays ##########
 bool blink = LOW;
 
 //RFM96W
@@ -26,8 +35,8 @@ int counter = 0;
 //uint8_t address[][6] = {"00001"};
 
 //MCP3008
-MCP3008 adc1;
-MCP3008 adc2;
+Adafruit_MCP3008 adc1;
+Adafruit_MCP3008 adc2;
 
 //SignalProcesing
 SignalProcessing sp;
@@ -87,9 +96,11 @@ void setup() {
 
   //serial setup
   Serial.begin(115200);
-  delay(1000);
-  adc1.begin(21);
-  adc2.begin(22);
+
+  delay(100);
+  menu.setupTFT();
+  adc1.begin(ADC1_CS, &SPI1);
+  adc2.begin(ADC2_CS, &SPI1);
   Serial.println("LoRa Sender");
   LoRa.setPins(rfm95w_cs, rfm95w_reset, 2);
   LoRa.setSPI(SPI1);
@@ -100,9 +111,9 @@ void setup() {
   else {
     Serial.println("Starting LoRa successfull!");
   }
-
+  
   //preparing the index in mafData
-  for(int i=0; i<16; i++) {
+  for(int i=0; i<10; i++) {
     mafData[i][0] = 2;
   }
 }
@@ -115,11 +126,11 @@ void loop() {
   blink = !blink;
 
   //read data from both adcs
-  for (int i=0; i<8; i++) {
-    sp.controlData[i][0] = adc1.analogRead(i);
+  for(int i=0; i<8; i++) {
+    sp.controlData[i][0] = adc1.readADC(i);
   }
-  for (int i=0; i<2; i++) {
-    sp.controlData[i+8][0] = adc2.analogRead(i);
+  for(int i=0; i<2; i++) {
+    sp.controlData[i+8][0] = adc2.readADC(i);
   }
 
   //moving average filter
@@ -128,7 +139,7 @@ void loop() {
   }
 
   //mapping data from analog range to servo range with limits, zeropoint, deadzone and invert
-  //servoData.sD0 = sp.analogLinear(0);
+  servoData.sD0 = sp.analogLinear(0);
   servoData.sD1 = sp.analogLinear(1);
   servoData.sD2 = sp.analogLinear(2);
   //servoData.sD3 = sp.analogLinear(3);
@@ -149,6 +160,18 @@ void loop() {
   LoRa.beginPacket();
   LoRa.write(servoData, sizeof(servoData));
   LoRa.endPacket();
+}
+
+
+//########## setup1 code ##########
+void setup1() {
+  delay(1500);
+}
+
+
+//########## loop1 code ##########
+void loop1() {
+  menu.executeMenu();
 
   //debuggingzone
   /*for(int i=0; i<16; i++) {
@@ -197,5 +220,5 @@ void loop() {
   Serial.print(servoData.sD14);
   Serial.print(" sD15: ");
   Serial.println(servoData.sD15);
-  //delay(10);
+  delay(100);
 }
