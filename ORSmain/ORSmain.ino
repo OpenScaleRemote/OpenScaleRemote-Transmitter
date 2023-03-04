@@ -8,7 +8,7 @@
 # include "RF24.h"
 # include "MCP3XXX.h"
 # include "SignalProcessing.h"
-#include <LoRa.h>
+# include <LoRa.h>
 
 //########## objects, arrays, variabeles ##########
 bool blink = LOW;
@@ -100,13 +100,10 @@ void setup() {
   else {
     Serial.println("Starting LoRa successfull!");
   }
-  
-  
-  
+
   //preparing the index in mafData
   for(int i=0; i<16; i++) {
     mafData[i][0] = 2;
-
   }
 }
 
@@ -150,7 +147,7 @@ void loop() {
   
   //sending data to the radio
   LoRa.beginPacket();
-  LoRa.print(servoData);
+  LoRa.write(servoData, sizeof(servoData));
   LoRa.endPacket();
 
   //debuggingzone
