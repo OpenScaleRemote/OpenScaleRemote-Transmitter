@@ -23,7 +23,7 @@ int SignalProcessing::analogLinear(int inputChannel) {
     default:
       Serial.print("Falscher Wert Servoinvertierung Kanal: ");
       Serial.println(inputChannel);
-      return controlData[inputChannel][3];
+      return 90;
   }
 }
 
@@ -45,8 +45,8 @@ int SignalProcessing::digital2Way(int referenceChannel, int inputChannel) {
       break;
     default:
       Serial.print("Falscher Wert Servoinvertierung Kanal: ");
-      Serial.println(referenceChannel);
-      return controlData[inputChannel][3];
+      Serial.println(inputChannel);
+      return 90;
   }
 }
 
@@ -72,7 +72,7 @@ int SignalProcessing::digital3Way(int referenceChannel, int inputChannel) {
       break;
     default:
       Serial.print("Falscher Wert Servoinvertierung Kanal: ");
-      Serial.println(referenceChannel);
-      return controlData[inputChannel][3];
+      Serial.println(inputChannel);
+      return 90;
   }
 }
