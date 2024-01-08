@@ -4,8 +4,6 @@
 
 //########## librarys ##########
 # include <SPI.h>
-# include "printf.h"
-# include <Adafruit_MCP3008.h>
 # include "SignalProcessing.h"
 # include <LoRa.h>
 
@@ -19,12 +17,6 @@ bool blink = LOW;
 #define rfm95w_cs 13
 #define rfm95w_reset 20
 #define rfm95w_dio0 26
-
-//MCP3008
-# define ADC1_CS    21
-# define ADC2_CS    22
-Adafruit_MCP3008 adc1;
-Adafruit_MCP3008 adc2;
 
 //SignalProcesing
 SignalProcessing sp;
@@ -55,7 +47,6 @@ int mafData[10][windowSize+2] = {};  // index (0), sum (1), readings[windowSize]
 
 
 //########## methods ##########
-
 int mafFiltering(int b, int a) {
   int z;
   mafData[a][1] = mafData[a][1] - mafData[a][mafData[a][0]];        // Remove the oldest entry from the sum
@@ -68,27 +59,28 @@ int mafFiltering(int b, int a) {
   return z = mafData[a][1] / windowSize;                            // Divide the sum of the window by the window size for the result
 }
 
-
 //########## setup code ##########
 void setup() {
   //GPIO setup
-  pinMode(25, OUTPUT);
-  pinMode(0, INPUT_PULLDOWN);
-  pinMode(1, INPUT_PULLDOWN);
-  pinMode(2, INPUT_PULLDOWN);
-  pinMode(3, INPUT_PULLDOWN);
-  pinMode(4, INPUT_PULLDOWN);
-  pinMode(5, INPUT_PULLDOWN);
-  pinMode(6, INPUT_PULLDOWN);
-  pinMode(7, INPUT_PULLDOWN);
+  pinMode(LED_BUILTIN, OUTPUT);
+  pinMode(A0, INPUT);
+  pinMode(A1, INPUT);
+  pinMode(A2, INPUT);
+  pinMode(A3, INPUT);
+  pinMode(A4, INPUT);
+  pinMode(A5, INPUT);
+  pinMode(A6, INPUT);
+  pinMode(A7, INPUT);
+  pinMode(A8, INPUT);
+  pinMode(A9, INPUT);
 
   //serial setup
-  //Serial.begin(9600);
-  //while (!Serial);
+  Serial.begin(250000);
+  while (!Serial);
   
-  //Serial.println("LoRa Sender");
+  Serial.println("LoRa Sender");
 
-  //Serial.println("Starting LoRa");
+  /*//Serial.println("Starting LoRa");
   LoRa.setPins(rfm95w_cs, rfm95w_reset, rfm95w_dio0);
   
   if (!LoRa.begin(915E6)) {
@@ -97,13 +89,7 @@ void setup() {
   }
   else {
     //Serial.println("Starting LoRa successfull!");
-  }
-
-  //Serial.println("Starting adc1");
-  adc1.begin(ADC1_CS, &SPI1);
-  
-  //Serial.println("Starting adc2");
-  adc2.begin(ADC2_CS, &SPI1);
+  }*/
 
   //preparing the index in mafData
   for(int i=0; i<16; i++) {
@@ -114,18 +100,21 @@ void setup() {
 
 //########## loop code ##########
 void loop() {
-  //Serial.println("Loop the loop!");
   //blink the onboard led
-  digitalWrite(25, blink);
+  digitalWrite(LED_BUILTIN, blink);
   blink = !blink;
 
   //read data from both adcs
-  for (int i=0; i<8; i++) {
-    sp.controlData[i][0] = adc1.readADC(i);
-  }
-  for (int i=0; i<2; i++) {
-    sp.controlData[i+8][0] = adc2.readADC(i);
-  }
+  sp.controlData[0][0] = analogRead(A0);
+  sp.controlData[1][0] = analogRead(A1);
+  sp.controlData[2][0] = analogRead(A2);
+  sp.controlData[3][0] = analogRead(A3);
+  sp.controlData[4][0] = analogRead(A4);
+  sp.controlData[5][0] = analogRead(A5);
+  sp.controlData[6][0] = analogRead(A6);
+  sp.controlData[7][0] = analogRead(A7);
+  sp.controlData[8][0] = analogRead(A8);
+  sp.controlData[9][0] = analogRead(A9);
 
   //moving average filter
   for(int i=0; i<10; i++) {
@@ -150,7 +139,7 @@ void loop() {
   servoData.sD14 = sp.digital3Way(14, 4);
   servoData.sD15 = sp.digital3Way(15, 6);
   
-  //sending data to the radio
+  /*//sending data to the radio
   //Serial.println("Sending...");
   while (LoRa.beginPacket() == 0) {
     //Serial.println("waiting for radio ... ");
@@ -162,7 +151,7 @@ void loop() {
     LoRa.write(((byte *) &servoData)[i]);
   }
   LoRa.endPacket(true);
-  delay(50);
+  delay(50);*/
 
   //debuggingzone
   /*for(int i=0; i<16; i++) {
@@ -177,7 +166,7 @@ void loop() {
     Serial.print(i);
     Serial.print("][0]: ");
     Serial.println(sp.controlData[i][0]);
-  }
+  }*/
   Serial.println("##########");
   Serial.print("sD0: ");
   Serial.print(servoData.sD0);
@@ -210,5 +199,6 @@ void loop() {
   Serial.print(" sD14: ");
   Serial.print(servoData.sD14);
   Serial.print(" sD15: ");
-  Serial.println(servoData.sD15);*/
+  Serial.println(servoData.sD15);
+  delay(10);
 }
