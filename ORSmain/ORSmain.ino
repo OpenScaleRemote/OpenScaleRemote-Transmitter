@@ -11,12 +11,12 @@
 bool blink = LOW;
 
 //RFM96W
-#define rfm95w_mosi 15
-#define rfm95w_miso 12
-#define rfm95w_sck 14
-#define rfm95w_cs 13
-#define rfm95w_reset 20
-#define rfm95w_dio0 26
+#define rfm95w_mosi 51
+#define rfm95w_miso 50
+#define rfm95w_sck 52
+#define rfm95w_cs 53
+#define rfm95w_reset 10
+#define rfm95w_dio0 2
 
 //SignalProcesing
 SignalProcessing sp;
@@ -75,24 +75,24 @@ void setup() {
   pinMode(A9, INPUT);
 
   //serial setup
-  Serial.begin(250000);
+  Serial.begin(115200);
   while (!Serial);
   
   Serial.println("LoRa Sender");
 
-  /*//Serial.println("Starting LoRa");
+  Serial.println("Starting LoRa");
   LoRa.setPins(rfm95w_cs, rfm95w_reset, rfm95w_dio0);
   
   if (!LoRa.begin(915E6)) {
-    //Serial.println("Starting LoRa failed!");
+    Serial.println("Starting LoRa failed!");
     while (1);
   }
   else {
-    //Serial.println("Starting LoRa successfull!");
-  }*/
+    Serial.println("Starting LoRa successfull!");
+  }
 
   //preparing the index in mafData
-  for(int i=0; i<16; i++) {
+  for(int i=0; i<10; i++) {
     mafData[i][0] = 2;
   }
 }
