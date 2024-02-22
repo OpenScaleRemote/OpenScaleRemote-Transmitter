@@ -1,1 +1,1 @@
-# OpenRemote Sender
+# OpenScaleRemote Transmitter
