@@ -66,78 +66,65 @@ void SetupMethods::setupDigitalPins() {
   #endif
   
   #ifdef ch15_active
-    pinMode(pin_ch15, INPUT);
+    pinMode(pin_ch15, INPUT_PULLUP);
   #endif
   
   #ifdef ch16_active
-    pinMode(pin_ch16, INPUT);
+    pinMode(pin_ch16, INPUT_PULLUP);
   #endif
   
   #ifdef ch17_active
-    pinMode(pin_ch17, INPUT);
+    pinMode(pin_ch17, INPUT_PULLUP);
   #endif
   
   #ifdef ch18_active
-    pinMode(pin_ch18, INPUT);
+    pinMode(pin_ch18, INPUT_PULLUP);
   #endif
   
   #ifdef ch19_active
-    pinMode(pin_ch19, INPUT);
+    pinMode(pin_ch19, INPUT_PULLUP);
   #endif
   
   #ifdef ch20_active
-    pinMode(pin_ch20, INPUT);
+    pinMode(pin_ch20, INPUT_PULLUP);
   #endif
   
   #ifdef ch21_active
-    pinMode(pin_ch21, INPUT);
+    pinMode(pin_ch21, INPUT_PULLUP);
   #endif
   
   #ifdef ch22_active
-    pinMode(pin_ch22, INPUT);
+    pinMode(pin_ch22, INPUT_PULLUP);
   #endif
   
   #ifdef ch23_active
-    pinMode(pin_ch23, INPUT);
+    pinMode(pin_ch23, INPUT_PULLUP);
   #endif
   
   #ifdef ch24_active
-    pinMode(pin_ch24, INPUT);
+    pinMode(pin_ch24, INPUT_PULLUP);
   #endif
   
   #ifdef ch25_active
-    pinMode(pin_ch25, INPUT);
+    pinMode(pin_ch25, INPUT_PULLUP);
   #endif
   
   #ifdef ch26_active
-    pinMode(pin_ch26, INPUT);
+    pinMode(pin_ch26, INPUT_PULLUP);
   #endif
   
   #ifdef ch27_active
-    pinMode(pin_ch27, INPUT);
+    pinMode(pin_ch27, INPUT_PULLUP);
   #endif
   
   #ifdef ch28_active
-    pinMode(pin_ch28, INPUT);
+    pinMode(pin_ch28, INPUT_PULLUP);
   #endif
   
   #ifdef ch29_active
-    pinMode(pin_ch29, INPUT);
+    pinMode(pin_ch29, INPUT_PULLUP);
   #endif
 }
 
 
 
-void SetupMethods::loraSetup() {
-  Serial.println("LoRa Sender");
-  Serial.println("Starting LoRa");
-  LoRa.setPins(rfm95w_cs, rfm95w_reset, rfm95w_dio0);
-  if (!LoRa.begin(915E6)) {
-    Serial.println("Starting LoRa failed!");
-    while (1);
-  }
-  else {
-    Serial.println("Starting LoRa successfull!");
-  }
-  delay(2000);
-}

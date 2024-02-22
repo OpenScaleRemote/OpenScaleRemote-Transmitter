@@ -5,7 +5,7 @@
 
 
 //########## serial data ##########
-//#define serialData
+#define serialData
 
 
 
@@ -79,86 +79,100 @@ Set matching pins for your microcontroller.
 */
 
 //channel 0
-  #define ch0_active
-  #define ch0_fast
+  //#define ch0_active
+  //#define ch0_fast1
+  //#define ch0_fast2
   //#define ch0_slow
-  #define ch0_analogLinear
+  //#define ch0_analogLinear
 
 //channel 1
-  #define ch1_active
-  #define ch1_fast
+  //#define ch1_active
+  //#define ch1_fast1
+  //#define ch1_fast2
   //#define ch1_slow
-  #define ch1_analogLinear
+  //#define ch1_analogLinear
 
 //channel 2
   //#define ch2_active
-  //#define ch2_fast
+  //#define ch2_fast1
+  //#define ch2_fast2
   //#define ch2_slow
   //#define ch2_analogLinear
 
 //channel 3
   //#define ch3_active
-  //#define ch3_fast
+  //#define ch3_fast1
+  //#define ch3_fast2
   //#define ch3_slow
   //#define ch3_analogLinear
 
 //channel 4
   //#define ch4_active
-  //#define ch4_fast
+  //#define ch4_fast1
+  //#define ch4_fast2
   //#define ch4_slow
   //#define ch4_analogLinear
 
 //channel 5
   //#define ch5_active
-  //#define ch5_fast
+  //#define ch5_fast1
+  //#define ch5_fast2
   //#define ch5_slow
   //#define ch5_analogLinear
 
 //channel 6
   //#define ch6_active
-  //#define ch6_fast
+  //#define ch6_fast1
+  //#define ch6_fast2
   //#define ch6_slow
   //#define ch6_analogLinear
 
 //channel 7
   //#define ch7_active
-  //#define ch7_fast
+  //#define ch7_fast1
+  //#define ch7_fast2
   //#define ch7_slow
   //#define ch7_analogLinear
 
 //channel 8
   //#define ch8_active
-  //#define ch8_fast
+  //#define ch8_fast1
+  //#define ch8_fast2
   //#define ch8_slow
   //#define ch8_analogLinear
 
 //channel 9
   //#define ch9_active
-  //#define ch9_fast
+  //#define ch9_fast1
+  //#define ch9_fast2
   //#define ch9_slow
   //#define ch9_analogLinear
 
 //channel 10
   //#define ch10_active
-  //#define ch10_fast
+  //#define ch10_fast1
+  //#define ch10_fast2
   //#define ch10_slow
   //#define ch10_analogLinear
 
 //channel 11
   //#define ch11_active
-  //#define ch11_fast
+  //#define ch11_fast1
+  //#define ch11_fast2
   //#define ch11_slow
   //#define ch11_analogLinear
 
 //channel 12
   //#define ch12_active
-  //#define ch12_fast
+  //#define ch12_fast1
+  //#define ch12_fast2
   //#define ch12_slow
   //#define ch12_analogLinear
 
 //channel 13
   //#define ch13_active
-  //#define ch13_fast
+  //#define ch13_fast1
+  //#define ch13_fast2
   //#define ch13_slow
   //#define ch13_analogLinear
 
@@ -170,101 +184,133 @@ If you want to use the digital3Way functions on for example channel 14 then chan
 */
 
 //channel 14
-  #define ch14_active
-  //#define ch14_fast
-  #define ch14_slow
-  #define ch14_digital2Way
+  //#define ch14_active
+  //#define ch14_fast1
+  //#define ch14_fast2
+  //#define ch14_slow
+  //#define ch14_ultraSlow
+  //#define ch14_digital2Way
   //#define ch14_digital3Way
 
 //channel 15
   //#define ch15_active
-  //#define ch15_fast
+  //#define ch15_fast1
+  //#define ch15_fast2
   //#define ch15_slow
+  //#define ch15_ultraSlow
   //#define ch15_digital2Way
 
 //channel 16
   //#define ch16_active
-  //#define ch16_fast
+  //#define ch16_fast1
+  //#define ch16_fast2
   //#define ch16_slow
+  //#define ch16_ultraSlow
   //#define ch16_digital2Way
   //#define ch16_digital3Way
 
 //channel 17
   //#define ch17_active
-  //#define ch17_fast
+  //#define ch17_fast1
+  //#define ch17_fast2
   //#define ch17_slow
+  //#define ch17_ultraSlow
   //#define ch17_digital2Way
 
 //channel 18
   //#define ch18_active
-  //#define ch18_fast
+  //#define ch18_fast1
+  //#define ch18_fast2
   //#define ch18_slow
+  //#define ch18_ultraSlow
   //#define ch18_digital2Way
   //#define ch18_digital3Way
 
 //channel 19
   //#define ch19_active
-  //#define ch19_fast
+  //#define ch19_fast1
+  //#define ch19_fast2
   //#define ch19_slow
+  //#define ch19_ultraSlow
   //#define ch19_digital2Way
 
 //channel 20
   //#define ch20_active
-  //#define ch20_fast
+  //#define ch20_fast1
+  //#define ch20_fast2
   //#define ch20_slow
+  //#define ch20_ultraSlow
   //#define ch20_digital2Way
   //#define ch20_digital3Way
 
 //channel 21
   //#define ch21_active
-  //#define ch21_fast
+  //#define ch21_fast1
+  //#define ch21_fast2
   //#define ch21_slow
+  //#define ch21_ultraSlow
   //#define ch21_digital2Way
 
 //channel 22
   //#define ch22_active
-  //#define ch22_fast
+  //#define ch22_fast1
+  //#define ch22_fast2
   //#define ch22_slow
+  //#define ch22_ultraSlow
   //#define ch22_digital2Way
 
 //channel 23
   //#define ch23_active
-  //#define ch23_fast
+  //#define ch23_fast1
+  //#define ch23_fast2
   //#define ch23_slow
+  //#define ch23_ultraSlow
   //#define ch23_digital2Way
 
 //channel 24
   //#define ch24_active
-  //#define ch24_fast
+  //#define ch24_fast1
+  //#define ch24_fast2
   //#define ch24_slow
+  //#define ch24_ultraSlow
   //#define ch24_digital2Way
 
 //channel 25
   //#define ch25_active
-  //#define ch25_fast
+  //#define ch25_fast1
+  //#define ch25_fast2
   //#define ch25_slow
+  //#define ch25_ultraSlow
   //#define ch25_digital2Way
 
 //channel 26
   //#define ch26_active
-  //#define ch26_fast
+  //#define ch26_fast1
+  //#define ch26_fast2
   //#define ch26_slow
+  //#define ch26_ultraSlow
   //#define ch26_digital2Way
 
 //channel 27
   //#define ch27_active
-  //#define ch27_fast
+  //#define ch27_fast1
+  //#define ch27_fast2
   //#define ch27_slow
+  //#define ch27_ultraSlow
   //#define ch27_digital2Way
 
 //channel 28
   //#define ch28_active
-  //#define ch28_fast
+  //#define ch28_fast1
+  //#define ch28_fast2
   //#define ch28_slow
+  //#define ch28_ultraSlow
   //#define ch28_digital2Way
 
 //channel 29
   //#define ch29_active
-  //#define ch29_fast
+  //#define ch29_fast1
+  //#define ch29_fast2
   //#define ch29_slow
+  //#define ch29_ultraSlow
   //#define ch29_digital2Way

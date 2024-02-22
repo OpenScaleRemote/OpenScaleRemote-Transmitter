@@ -1,37 +1,37 @@
 #include "SignalProcessing.h"
 
-int SignalProcessing::mafFiltering(int b, int a) {
+int SignalProcessing::mafFiltering(int chNum, int sensorValue, int arrayMafData[14][2+windowSize]) {                     // index (0), sum (1), readings(2 bis 1+windowSize)
   int z;
-  mafData[a][1] = mafData[a][1] - mafData[a][mafData[a][0]];        // Remove the oldest entry from the sum
-  mafData[a][mafData[a][0]] = b;                                    // Add the newest reading to the window
-  mafData[a][1] = mafData[a][1] + b;                                // Add the newest reading to the sum
-  mafData[a][0] = mafData[a][0]+1;                                  // Increment the index, and wrap to 0 if it exceeds the window size
-  if(mafData[a][0] >= windowSize+2) {
-    mafData[a][0] = 2;
+  arrayMafData[chNum][1] = arrayMafData[chNum][1] - arrayMafData[chNum][arrayMafData[chNum][0]];        // Remove the oldest entry from the sum
+  arrayMafData[chNum][arrayMafData[chNum][0]] = sensorValue;                                                      // Add the newest reading to the window
+  arrayMafData[chNum][1] = arrayMafData[chNum][1] + sensorValue;                                                    // Add the newest reading to the sum
+  arrayMafData[chNum][0] = arrayMafData[chNum][0]+1;                                                                // Increment the index, and wrap to 0 if it exceeds the window size
+  if(arrayMafData[chNum][0] >= 7) {
+    arrayMafData[chNum][0] = 2;
   }
-  return z = mafData[a][1] / windowSize;                            // Divide the sum of the window by the window size for the result
+  return z = arrayMafData[chNum][1] / windowSize;                                                                          // Divide the sum of the window by the window size for the result
 }
 
 
 
-int SignalProcessing::analogLinear(int inputChannel) {
-  switch(servoData[inputChannel][3]) {
+int SignalProcessing::analogLinear(int inputChannel, int arrayControlData[30][6], int arrayServoData[30][4]) {
+  switch(arrayServoData[inputChannel][3]) {
     case 0:
-      if(controlData[inputChannel][5] < (controlData[inputChannel][3]-controlData[inputChannel][4])) {
-        return map(controlData[inputChannel][5], controlData[inputChannel][1], (controlData[inputChannel][3]-controlData[inputChannel][4]), servoData[inputChannel][0], (servoData[inputChannel][2]-1));
-      }else if(controlData[inputChannel][5] > (controlData[inputChannel][3]+controlData[inputChannel][4])) {
-        return map(controlData[inputChannel][5], (controlData[inputChannel][3]+controlData[inputChannel][4]), controlData[inputChannel][2], (servoData[inputChannel][2]-1), servoData[inputChannel][1]);
+      if(arrayControlData[inputChannel][5] < (arrayControlData[inputChannel][3]-arrayControlData[inputChannel][4])) {
+        return map(arrayControlData[inputChannel][5], arrayControlData[inputChannel][1], (arrayControlData[inputChannel][3]-arrayControlData[inputChannel][4]), arrayServoData[inputChannel][0], (arrayServoData[inputChannel][2]-1));
+      }else if(arrayControlData[inputChannel][5] > (arrayControlData[inputChannel][3]+arrayControlData[inputChannel][4])) {
+        return map(arrayControlData[inputChannel][5], (arrayControlData[inputChannel][3]+arrayControlData[inputChannel][4]), arrayControlData[inputChannel][2], (arrayServoData[inputChannel][2]-1), arrayServoData[inputChannel][1]);
       }else {
-        return servoData[inputChannel][2];
+        return arrayServoData[inputChannel][2];
       }
       break;
     case 1:
-      if(controlData[inputChannel][5] < (controlData[inputChannel][3]-controlData[inputChannel][4])) {
-        return map(controlData[inputChannel][5], controlData[inputChannel][1], (controlData[inputChannel][3]-controlData[inputChannel][4]), servoData[inputChannel][1], (servoData[inputChannel][2]+1));
-      }else if(controlData[inputChannel][5] > (controlData[inputChannel][3]+controlData[inputChannel][4])) {
-        return map(controlData[inputChannel][5], (controlData[inputChannel][3]+controlData[inputChannel][4]), controlData[inputChannel][2], (servoData[inputChannel][2]-1), servoData[inputChannel][0]);
+      if(arrayControlData[inputChannel][5] < (arrayControlData[inputChannel][3]-arrayControlData[inputChannel][4])) {
+        return map(arrayControlData[inputChannel][5], arrayControlData[inputChannel][1], (arrayControlData[inputChannel][3]-arrayControlData[inputChannel][4]), arrayServoData[inputChannel][1], (arrayServoData[inputChannel][2]+1));
+      }else if(arrayControlData[inputChannel][5] > (arrayControlData[inputChannel][3]+arrayControlData[inputChannel][4])) {
+        return map(arrayControlData[inputChannel][5], (arrayControlData[inputChannel][3]+arrayControlData[inputChannel][4]), arrayControlData[inputChannel][2], (arrayServoData[inputChannel][2]-1), arrayServoData[inputChannel][0]);
       }else {
-        return servoData[inputChannel][2];
+        return arrayServoData[inputChannel][2];
       }
       break;
     default:
@@ -43,20 +43,20 @@ int SignalProcessing::analogLinear(int inputChannel) {
 
 
 
-int SignalProcessing::digital2Way(int inputChannel, int inputChannelPin) {
-  switch(servoData[inputChannel][3]) {
+int SignalProcessing::digital2Way(int inputChannel, int inputChannelPin, int arrayServoData[30][4]) {
+  switch(arrayServoData[inputChannel][3]) {
     case 0:
       if(digitalRead(inputChannelPin) == 0) {
-        return servoData[inputChannel][1];
+        return arrayServoData[inputChannel][1];
       }else {
-        return servoData[inputChannel][0];
+        return arrayServoData[inputChannel][0];
       }
       break;
     case 1:
       if(digitalRead(inputChannelPin) == 0) {
-        return servoData[inputChannel][0];
+        return arrayServoData[inputChannel][0];
       }else {
-        return servoData[inputChannel][1];
+        return arrayServoData[inputChannel][1];
       }
       break;
     default:
@@ -65,27 +65,27 @@ int SignalProcessing::digital2Way(int inputChannel, int inputChannelPin) {
       return 90;
   }
 }
+  
 
 
-
-int SignalProcessing::digital3Way(int inputChannel, int inputChannelPin) {
-  switch(servoData[inputChannel][3]) {
+int SignalProcessing::digital3Way(int inputChannel, int inputChannelPin, int arrayServoData[30][4]) {
+  switch(arrayServoData[inputChannel][3]) {
     case 0:
       if(digitalRead(inputChannelPin) == HIGH && digitalRead(inputChannelPin+1) == LOW) {
-        return servoData[inputChannel][1];
+        return arrayServoData[inputChannel][1];
       }else if(digitalRead(inputChannelPin) == LOW && digitalRead(inputChannelPin+1) == HIGH) {
-        return servoData[inputChannel][0];
+        return arrayServoData[inputChannel][0];
       }else {
-        return servoData[inputChannel][2];
+        return arrayServoData[inputChannel][2];
       }
       break;
     case 1:
       if(digitalRead(inputChannelPin) == HIGH && digitalRead(inputChannelPin+1) == LOW) {
-        return servoData[inputChannel][0];
+        return arrayServoData[inputChannel][0];
       }else if(digitalRead(inputChannelPin) == LOW && digitalRead(inputChannelPin+1) == HIGH) {
-        return servoData[inputChannel][1];
+        return arrayServoData[inputChannel][1];
       }else {
-        return servoData[inputChannel][2];
+        return arrayServoData[inputChannel][2];
       }
       break;
     default:
@@ -97,224 +97,316 @@ int SignalProcessing::digital3Way(int inputChannel, int inputChannelPin) {
 
 
 
-void SignalProcessing::processData() {
+void SignalProcessing::processData(int arrayMafData[14][2+windowSize], int arrayControlData[30][6], int arrayServoData[30][4], byte arrayChannelData[30]) {
   #ifdef ch0_active
-    controlData[0][0] = analogRead(pin_ch0);
-    controlData[0][5] = mafFiltering(controlData[0][0], 0);
+  {
+    byte ch=0;
+    arrayControlData[ch][0] = analogRead(pin_ch0);
+    arrayControlData[ch][5] = mafFiltering(ch, arrayControlData[ch][0], arrayMafData);
     #ifdef ch0_analogLinear
-      channelData.sD0 = analogLinear(0);
+      arrayChannelData[ch] = analogLinear(ch, arrayControlData, arrayServoData);
     #endif
+  }
   #endif
 
   #ifdef ch1_active
-    controlData[1][0] = analogRead(pin_ch1);
-    controlData[1][5] = mafFiltering(controlData[1][0], 1);
+  {
+    byte ch=1;
+    arrayControlData[ch][0] = analogRead(pin_ch1);
+    arrayControlData[ch][5] = mafFiltering(ch, arrayControlData[ch][0], arrayMafData);
     #ifdef ch1_analogLinear
-      channelData.sD1 = analogLinear(1);
+      arrayChannelData[ch] = analogLinear(ch, arrayControlData, arrayServoData);
     #endif
+  }
   #endif
 
   #ifdef ch2_active
-    controlData[2][0] = analogRead(pin_ch2);
-    controlData[2][5] = mafFiltering(controlData[2][0], 2);
+  {
+    byte ch=2;
+    arrayControlData[ch][0] = analogRead(pin_ch2);
+    arrayControlData[ch][5] = mafFiltering(ch, arrayControlData[ch][0], arrayMafData);
     #ifdef ch2_analogLinear
-      channelData.sD2 = analogLinear(2);
+      arrayChannelData[ch] = analogLinear(ch, arrayControlData, arrayServoData);
     #endif
+  }
   #endif
 
   #ifdef ch3_active
-    controlData[3][0] = analogRead(pin_ch3);
-    controlData[3][5] = mafFiltering(controlData[3][0], 3);
+  {
+    byte ch=3;
+    arrayControlData[ch][0] = analogRead(pin_ch3);
+    arrayControlData[ch][5] = mafFiltering(ch, arrayControlData[ch][0], arrayMafData);
     #ifdef ch3_analogLinear
-      channelData.sD3 = analogLinear(3);
+      arrayChannelData[ch] = analogLinear(ch, arrayControlData, arrayServoData);
     #endif
+  }
   #endif
 
   #ifdef ch4_active
-    controlData[4][0] = analogRead(pin_ch4);
-    controlData[4][5] = mafFiltering(controlData[4][0], 4);
+  {
+    byte ch=4;
+    arrayControlData[ch][0] = analogRead(pin_ch4);
+    arrayControlData[ch][5] = mafFiltering(ch, arrayControlData[ch][0], arrayMafData);
     #ifdef ch4_analogLinear
-      channelData.sD4 = analogLinear(4);
+      arrayChannelData[ch] = analogLinear(ch, arrayControlData, arrayServoData);
     #endif
+  }
   #endif
 
   #ifdef ch5_active
-    controlData[5][0] = analogRead(pin_ch5);
-    controlData[5][5] = mafFiltering(controlData[5][0], 5);
+  {
+    byte ch=5;
+    arrayControlData[ch][0] = analogRead(pin_ch5);
+    arrayControlData[ch][5] = mafFiltering(ch, arrayControlData[ch][0], arrayMafData);
     #ifdef ch5_analogLinear
-      channelData.sD5 = analogLinear(5);
+      arrayChannelData[ch] = analogLinear(ch, arrayControlData, arrayServoData);
     #endif
+  }
   #endif
 
   #ifdef ch6_active
-    controlData[6][0] = analogRead(pin_ch6);
-    controlData[6][5] = mafFiltering(controlData[6][0], 6);
+  {
+    byte ch=6;
+    arrayControlData[ch][0] = analogRead(pin_ch6);
+    arrayControlData[ch][5] = mafFiltering(ch, arrayControlData[ch][0], arrayMafData);
     #ifdef ch6_analogLinear
-      channelData.sD6 = analogLinear(6);
+      arrayChannelData[ch] = analogLinear(ch, arrayControlData, arrayServoData);
     #endif
+  }
   #endif
 
   #ifdef ch7_active
-    controlData[7][0] = analogRead(pin_ch7);
-    controlData[7][5] = mafFiltering(controlData[7][0], 7);
+  {
+    byte ch=7;
+    arrayControlData[ch][0] = analogRead(pin_ch7);
+    arrayControlData[ch][5] = mafFiltering(ch, arrayControlData[ch][0], arrayMafData);
     #ifdef ch7_analogLinear
-      channelData.sD7 = analogLinear(7);
+      arrayChannelData[ch] = analogLinear(ch, arrayControlData, arrayServoData);
     #endif
+  }
   #endif
 
   #ifdef ch8_active
-    controlData[8][0] = analogRead(pin_ch8);
-    controlData[8][5] = mafFiltering(controlData[8][0], 8);
+  {
+    byte ch=8;
+    arrayControlData[ch][0] = analogRead(pin_ch8);
+    arrayControlData[ch][5] = mafFiltering(ch, arrayControlData[ch][0], arrayMafData);
     #ifdef ch8_analogLinear
-      channelData.sD8 = analogLinear(8);
+      arrayChannelData[ch] = analogLinear(ch, arrayControlData, arrayServoData);
     #endif
+  }
   #endif
 
   #ifdef ch9_active
-    controlData[9][0] = analogRead(pin_ch9);
-    controlData[9][5] = mafFiltering(controlData[9][0], 9);
+  {
+    byte ch=9;
+    arrayControlData[ch][0] = analogRead(pin_ch9);
+    arrayControlData[ch][5] = mafFiltering(ch, arrayControlData[ch][0], arrayMafData);
     #ifdef ch9_analogLinear
-      channelData.sD9 = analogLinear(9);
+      arrayChannelData[ch] = analogLinear(ch, arrayControlData, arrayServoData);
     #endif
+  }
   #endif
 
   #ifdef ch10_active
-    controlData1[0][0] = analogRead(pin_ch10);
-    controlData[10][5] = mafFiltering(controlData[10][0], 10);
-    #ifdef ch11_analogLinear
-      channelData.sD10 = analogLinear(10);
+  {
+    byte ch=10;
+    arrayControlData[ch][0] = analogRead(pin_ch10);
+    arrayControlData[ch][5] = mafFiltering(ch, arrayControlData[ch][0], arrayMafData);
+    #ifdef ch10_analogLinear
+      arrayChannelData[ch] = analogLinear(ch, arrayControlData, arrayServoData);
     #endif
+  }
   #endif
 
   #ifdef ch11_active
-    controlData[11][0] = analogRead(pin_ch11);
-    controlData[11][5] = mafFiltering(controlData[11][0], 11);
+  {
+    byte ch=11;
+    arrayControlData[ch][0] = analogRead(pin_ch11);
+    arrayControlData[ch][5] = mafFiltering(ch, arrayControlData[ch][0], arrayMafData);
     #ifdef ch11_analogLinear
-      channelData.sD11 = analogLinear(11);
+      arrayChannelData[ch] = analogLinear(ch, arrayControlData, arrayServoData);
     #endif
+  }
   #endif
 
   #ifdef ch12_active
-    controlData[12][0] = analogRead(pin_ch12);
-    controlData[12][5] = mafFiltering(controlData[12][0], 12);
+  {
+    byte ch=12;
+    arrayControlData[ch][0] = analogRead(pin_ch12);
+    arrayControlData[ch][5] = mafFiltering(ch, arrayControlData[ch][0], arrayMafData);
     #ifdef ch12_analogLinear
-      channelData.sD12 = analogLinear(12);
+      arrayChannelData[ch] = analogLinear(ch, arrayControlData, arrayServoData);
     #endif
+  }
   #endif
 
   #ifdef ch13_active
-    controlData[13][0] = analogRead(pin_ch13);
-    controlData[13][5] = mafFiltering(controlData[13][0], 13);
+  {
+    byte ch=13;
+    arrayControlData[ch][0] = analogRead(pin_ch13);
+    arrayControlData[ch][5] = mafFiltering(ch, arrayControlData[ch][0], arrayMafData);
     #ifdef ch13_analogLinear
-      channelData.sD13 = analogLinear(13);
+      arrayChannelData[ch] = analogLinear(ch, arrayControlData, arrayServoData);
     #endif
+  }
   #endif
 
+
+
   #ifdef ch14_active
+  {
+    byte ch=14;
     #ifdef ch14_digital2Way
-      channelData.sD14 = digital2Way(14, pin_ch14);
+      arrayChannelData[ch] = digital2Way(ch, pin_ch14);
     #endif
     #ifdef ch14_digital3Way
-      channelData.sD14 = digital3Way(14, pin_ch14);
+      arrayChannelData[ch] = digital3Way(ch, pin_ch14);
     #endif
+  }
   #endif
 
   #ifdef ch15_active
+  {
+    byte ch=15;
     #ifdef ch15_digital2Way
-      channelData.sD15 = digital2Way(15, pin_ch15);
+      arrayChannelData[ch] = digital2Way(ch, pin_ch15);
     #endif
+  }
   #endif
 
   #ifdef ch16_active
+  {
+    byte ch=16;
     #ifdef ch16_digital2Way
-      channelData.sD16 = digital2Way(16, pin_ch16);
+      arrayChannelData[ch] = digital2Way(ch, pin_ch16);
     #endif
     #ifdef ch16_digital3Way
-      channelData.sD16 = digital3Way(16, pin_ch16);
+      arrayChannelData[ch] = digital3Way(ch, pin_ch16);
     #endif
+  }
   #endif
 
   #ifdef ch17_active
+  {
+    byte ch=17;
     #ifdef ch17_digital2Way
-      channelData.sD17 = digital2Way(17, pin_ch17);
+      arrayChannelData[ch] = digital2Way(ch, pin_ch17);
     #endif
+  }
   #endif
 
   #ifdef ch18_active
+  {
+    byte ch=18;
     #ifdef ch18_digital2Way
-      channelData.sD18 = digital2Way(18, pin_ch18);
+      arrayChannelData[ch] = digital2Way(ch, pin_ch18);
     #endif
     #ifdef ch18_digital3Way
-      channelData.sD18 = digital3Way(18, pin_ch18);
+      arrayChannelData[ch] = digital3Way(ch, pin_ch18);
     #endif
+  }
   #endif
 
   #ifdef ch19_active
+  {
+    byte ch=19;
     #ifdef ch19_digital2Way
-      channelData.sD19 = digital2Way(19, pin_ch19);
+      arrayChannelData[ch] = digital2Way(ch, pin_ch19);
     #endif
+  }
   #endif
 
   #ifdef ch20_active
+  {
+    byte ch=20;
     #ifdef ch20_digital2Way
-      channelData.sD20 = digital2Way(20, pin_ch20);
+      arrayChannelData[ch] = digital2Way(ch, pin_ch20);
     #endif
     #ifdef ch20_digital3Way
-      channelData.sD20 = digital3Way(20, pin_ch20);
+      arrayChannelData[ch] = digital3Way(ch, pin_ch20);
     #endif
+  }
   #endif
 
   #ifdef ch21_active
+  {
+    byte ch=21;
     #ifdef ch21_digital2Way
-      channelData.sD21 = digital2Way(21, pin_ch21);
+      arrayChannelData[ch] = digital2Way(ch, pin_ch21);
     #endif
+  }
   #endif
 
   #ifdef ch22_active
+  {
+    byte ch=22;
     #ifdef ch22_digital2Way
-      channelData.sD22 = digital2Way(22, pin_ch22);
+      arrayChannelData[ch] = digital2Way(ch, pin_ch22);
     #endif
+  }
   #endif
 
   #ifdef ch23_active
+  {
+    byte ch=23;
     #ifdef ch23_digital2Way
-      channelData.sD23 = digital2Way(23, pin_ch23);
+      arrayChannelData[ch] = digital2Way(ch, pin_ch23);
     #endif
+  }
   #endif
 
   #ifdef ch24_active
+  {
+    byte ch=24;
     #ifdef ch24_digital2Way
-      channelData.sD24 = digital2Way(24, pin_ch24);
+      arrayChannelData[ch] = digital2Way(ch, pin_ch24);
     #endif
+  }
   #endif
 
   #ifdef ch25_active
+  {
+    byte ch=25;
     #ifdef ch25_digital2Way
-      channelData.sD25 = digital2Way(25, pin_ch25);
+      arrayChannelData[ch] = digital2Way(ch, pin_ch25);
     #endif
+  }
   #endif
 
   #ifdef ch26_active
+  {
+    byte ch=26;
     #ifdef ch26_digital2Way
-      channelData.sD26 = digital2Way(26, pin_ch26);
+      arrayChannelData[ch] = digital2Way(ch, pin_ch26);
     #endif
+  }
   #endif
 
   #ifdef ch27_active
+  {
+    byte ch=27;
     #ifdef ch27_digital2Way
-      channelData.sD27 = digital2Way(27, pin_ch27);
+      arrayChannelData[ch] = digital2Way(ch, pin_ch27);
     #endif
+  }
   #endif
 
   #ifdef ch28_active
+  {
+    byte ch=28;
     #ifdef ch28_digital2Way
-      channelData.sD28 = digital2Way(28, pin_ch28);
+      arrayChannelData[ch] = digital2Way(ch, pin_ch28);
     #endif
+  }
   #endif
 
   #ifdef ch29_active
+  {
+    byte ch=29;
     #ifdef ch29_digital2Way
-      channelData.sD29 = digital2Way(29, pin_ch29);
+      arrayChannelData[ch] = digital2Way(ch, pin_ch29);
     #endif
+  }
   #endif
 }

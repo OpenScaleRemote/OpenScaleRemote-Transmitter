@@ -1,6 +1,5 @@
 #include "Arduino.h"
 #include "config.h"
-#include <LoRa.h>
 
 class SetupMethods {
   public:
@@ -8,5 +7,4 @@ class SetupMethods {
   public:
     void setupAnalogPins();
     void setupDigitalPins();
-    void loraSetup();
 };
