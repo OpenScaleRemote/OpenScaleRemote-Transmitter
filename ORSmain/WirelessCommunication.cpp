@@ -4,7 +4,7 @@ void WirelessCommunication::loraSetup() {
   Serial.println("LoRa Sender");
   Serial.println("Starting LoRa");
   LoRa.setPins(rfm95w_cs, rfm95w_reset, rfm95w_dio0);
-  if (!LoRa.begin(915E6)) {
+  if (!LoRa.begin(868E6)) {
     Serial.println("Starting LoRa failed!");
     while (1);
   }
