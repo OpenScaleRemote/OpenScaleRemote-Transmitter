@@ -1,8 +1,11 @@
 # OpenScaleRemote Transmitter
 
+OpenScaleRemote is a open source platform for building your own RC Transmitter and Reciever. The Transmitter can be based of lots of different boards, including various arduino, esp32 and teensy boards.
+
 ## MCU
 
-OpenScaleRemote is a open source platform for building your own RC Transmitter and Reciever. The Transmitter can be based on lots of different boards, including various arduino, esp32 and teensy boards. The RP2040 is currently not supported.
+The software of the OpenScaleRemote has support for the following boards already implemented. But you can also use any other Board with support for SPI, I2C, GPIO based interrupts and a sufficient number of analog and digital input pins.  
+Due to the lack of GPIO based interrupts the RP2040 running the arduino core by earlphilflower is not supported.
 
 Board function | Arduino MEGA 2560 | ESP32WROOM32 | Teensy4.1
 -------- | -------- | -------- | --------
