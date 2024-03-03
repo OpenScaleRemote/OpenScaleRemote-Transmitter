@@ -18,7 +18,7 @@ WirelessCommunication wc;
 //########## setup code ##########
 void setup() {
   //GPIO setup
-  pinMode(LED_BUILTIN, OUTPUT);
+  pinMode(pin_led, OUTPUT);
   sm.setupDigitalPins();
   sm.setupAnalogPins();
 
@@ -39,7 +39,7 @@ void setup() {
 //########## loop code ##########
 void loop() {
   //blink the onboard led
-  digitalWrite(LED_BUILTIN, blink);
+  digitalWrite(pin_led, blink);
   blink = !blink;
 
   //read data from adc
@@ -63,12 +63,12 @@ void loop() {
 
   //debuggingzone
   #ifdef serialData
-  for(int i=0; i<1; i++) {
+  for(int i=0; i<2; i++) {
     Serial.print("cD");
     Serial.print(i);
     Serial.print(":");
-    //Serial.print(controlData[i][5]);
-    Serial.print(channelData[i]);
+    Serial.print(controlData[i][5]);
+    //Serial.print(channelData[i]);
     //Serial.print(map(analogRead(A0), 0, 1023, 0, 255));
     Serial.print("   ");
   }
