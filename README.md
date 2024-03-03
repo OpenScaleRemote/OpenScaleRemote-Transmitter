@@ -1,8 +1,8 @@
 # OpenScaleRemote Transmitter
 
 ## Pins
-Function | Arduino MEGA 2560 | ESP32WROOM32
--------- | -------- | --------
+Function | Arduino MEGA 2560 | ESP32WROOM32 | Teensy4.1
+-------- | -------- | -------- | --------
 pin_led | LED_BUILTIN | 2
 rfm95w_mosi | 51 | 23
 rfm95w_miso | 50 | 19
