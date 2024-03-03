@@ -16,13 +16,22 @@ rfm95w_dio0 | 2 | 2 | not set yet
 
 ILI9488 TFT + Touch | Arduino MEGA 2560 | ESP32WROOM32 | Teensy4.1
 -------- | -------- | -------- | --------
+lcd_mosi | 51 | 23 | not set yet
+lcd_miso | 50 | 19 | not set yet
+lcd_sck | 52 | 18 | not set yet
 lcd_cs | not set yet | 17 | not set yet
 lcd_reset | not set yet | 16 | not set yet
 lcd_dc | not set yet | 12 | not set yet
+touch_mosi | 51 | 23 | not set yet
+touch_miso | 50 | 19 | not set yet
+touch_sck | 52 | 18 | not set yet
 touch_cs | not set yet | 4 | not set yet
 
 SD-Card | Arduino MEGA 2560 | ESP32WROOM32 | Teensy4.1
 -------- | -------- | -------- | --------
+sd_mosi | 51 | 23 | not set yet
+sd_miso | 50 | 19 | not set yet
+sd_sck | 52 | 18 | not set yet
 sc_cs | not set yet | 13 | not set yet
 
 Input channels | Arduino MEGA 2560 | ESP32WROOM32 | Teensy4.1
