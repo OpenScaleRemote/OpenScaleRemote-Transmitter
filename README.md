@@ -5,7 +5,7 @@ Board function | Arduino MEGA 2560 | ESP32WROOM32 | Teensy4.1
 -------- | -------- | -------- | --------
 pin_led | LED_BUILTIN | 2 | not set yet
 
-The OpenScaleRemote uses an RFM95W LoRa module build by HopeRF. You can choose between different types of RFM95W boards. We recommend the (adafruit version)[https://www.adafruit.com/product/3072], but any other board can be used too. Just make shure that you use the matching logic voltage.
+The OpenScaleRemote uses an RFM95W LoRa module build by HopeRF. You can choose between different types of RFM95W boards. We recommend the [adafruit version](https://www.adafruit.com/product/3072), but any other board can be used too. Just make shure that you use the matching logic voltage.
 
 RFM95W | Arduino MEGA 2560 | ESP32WROOM32 | Teensy4.1
 -------- | -------- | -------- | --------
