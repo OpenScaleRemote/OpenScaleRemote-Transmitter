@@ -1,10 +1,14 @@
 # OpenScaleRemote Transmitter
 
+## MCU
+
 OpenScaleRemote is a open source platform for building your own RC Transmitter and Reciever. The Transmitter can be based on lots of different boards, including various arduino, esp32 and teensy boards. The RP2040 is currently not supported.
 
 Board function | Arduino MEGA 2560 | ESP32WROOM32 | Teensy4.1
 -------- | -------- | -------- | --------
 pin_led | LED_BUILTIN | 2 | not set yet
+
+## Wireless communication
 
 The OpenScaleRemote uses an RFM95W LoRa module build by HopeRF. You can choose between different types of RFM95W boards. We recommend the [adafruit version](https://www.adafruit.com/product/3072), but any other board can be used too. Just make sure that it matches the logic voltage of your mcu or use a SPI capable logic level voltage converter.
 
@@ -16,6 +20,8 @@ rfm95w_sck | 52 | 18 | not set yet
 rfm95w_cs | 53 | 5 | not set yet
 rfm95w_reset | 10 | 14 | not set yet
 rfm95w_dio0 | 2 | 2 | not set yet
+
+## Display and UI
 
 The UI of the OpenScaleRemote Transmitter is based on SquareLineUI running on a [2,8 inch ILI9488 based tft witch capacitive touch](https://www.az-delivery.de/en/products/2-8-zoll-lcd-tft-touch-display). It uses the TFT_eSPI display library by Bodmer and the lvgl grafics library by kisvegabor. Make sure that the tft matches the logic voltage of your mcu or use a SPI capable logic level voltage converter.
 Due too the lack of SRAM on the Arduino MEGA 2560, the SquareLineUI based UI is not available for this mcu.
@@ -33,6 +39,8 @@ touch_miso | not available | 19 | not set yet
 touch_sck | not available | 18 | not set yet
 touch_cs | not available | 4 | not set yet
 
+## Model data storage
+
 The OpenScaleRemote Transmitter uses a SD-Card to store model spezific data such as name, servo directions and servo limits. Any SD or MicroSD card module can be used here.
 
 SD-Card | Arduino MEGA 2560 | ESP32WROOM32 | Teensy4.1
@@ -41,6 +49,8 @@ sd_mosi | 51 | 23 | not set yet
 sd_miso | 50 | 19 | not set yet
 sd_sck | 52 | 18 | not set yet
 sc_cs | not set yet | 13 | not set yet
+
+## Analog and digital input channels
 
 Input channels | Arduino MEGA 2560 | ESP32WROOM32 | Teensy4.1
 -------- | -------- | -------- | --------
