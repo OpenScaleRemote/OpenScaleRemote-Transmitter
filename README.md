@@ -1,11 +1,12 @@
 # OpenScaleRemote Transmitter
 
+OpenScaleRemote is a open source platform for building your own RC Transmitter and Reciever. The Transmitter can be based on lots of different boards, including various arduino, esp32 and teensy boards. The RP2040 is currently not supported.
+
 Board function | Arduino MEGA 2560 | ESP32WROOM32 | Teensy4.1
 -------- | -------- | -------- | --------
 pin_led | LED_BUILTIN | 2 | not set yet
 
-    
-The OpenScaleRemote uses an RFM95W LoRa module build by HopeRF. You can choose between different types of RFM95W boards. We recommend the [adafruit version](https://www.adafruit.com/product/3072), but any other board can be used too. Just make shure that it matches the logic voltage of your mcu or use a SPI capable logic level voltage converter.
+OpenScaleRemote uses an RFM95W LoRa module build by HopeRF. You can choose between different types of RFM95W boards. We recommend the [adafruit version](https://www.adafruit.com/product/3072), but any other board can be used too. Just make shure that it matches the logic voltage of your mcu or use a SPI capable logic level voltage converter.
 
 RFM95W | Arduino MEGA 2560 | ESP32WROOM32 | Teensy4.1
 -------- | -------- | -------- | --------
