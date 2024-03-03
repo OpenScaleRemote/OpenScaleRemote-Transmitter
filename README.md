@@ -13,7 +13,7 @@ pin_led | LED_BUILTIN | 2 | not defined
 
 ## Wireless communication
 
-The OpenScaleRemote uses an RFM95W LoRa module build by HopeRF. You can choose between different types of RFM95W boards. We recommend the [adafruit version](https://www.adafruit.com/product/3072), but any other board can be used too. Just make sure that it matches the logic voltage of your mcu or use a SPI capable logic level voltage converter.
+The OpenScaleRemote uses an RFM95W LoRa module build by HopeRF running the [LoRa](https://github.com/sandeepmistry/arduino-LoRa) library by Sandeep Mistry. You can choose between different types of RFM95W boards. We recommend the [adafruit version](https://www.adafruit.com/product/3072), but any other board can be used too. Just make sure that it matches the logic voltage of your mcu or use a SPI capable logic level voltage converter.
 
 RFM95W | Arduino MEGA 2560 | ESP32WROOM32 | Teensy4.1
 -------- | -------- | -------- | --------
@@ -26,7 +26,7 @@ rfm95w_dio0 | 2 | 2 | not defined
 
 ## Display and UI
 
-The UI of the OpenScaleRemote Transmitter is based on SquareLineUI running on a [2,8 inch ILI9488 based tft witch capacitive touch](https://www.az-delivery.de/en/products/2-8-zoll-lcd-tft-touch-display). It uses the TFT_eSPI display library by Bodmer and the lvgl grafics library by kisvegabor. Make sure that the tft matches the logic voltage of your mcu or use a SPI capable logic level voltage converter.
+The UI of the OpenScaleRemote Transmitter is based on SquareLineUI running on a [2,8 inch ILI9488](https://www.az-delivery.de/en/products/2-8-zoll-lcd-tft-touch-display) based tft witch capacitive touch. It uses the [TFT_eSPI](https://github.com/Bodmer/TFT_eSPI) display library by Bodmer and the [lvgl](https://lvgl.io/) grafics library by kisvegabor. Make sure that the tft matches the logic voltage of your mcu or use a SPI capable logic level voltage converter.
 Due too the lack of SRAM on the Arduino MEGA 2560, the SquareLineUI based UI is not available for this mcu.
 
 ILI9488 TFT + Touch | Arduino MEGA 2560 | ESP32WROOM32 | Teensy4.1
