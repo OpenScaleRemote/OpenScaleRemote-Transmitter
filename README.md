@@ -26,7 +26,7 @@ rfm95w_dio0 | 2 | 2 | not defined
 
 ## Display and UI
 
-The UI of the OpenScaleRemote Transmitter is based on SquareLineUI running on a [2,8 inch ILI9488](https://www.az-delivery.de/en/products/2-8-zoll-lcd-tft-touch-display) based tft witch capacitive touch. It uses the [TFT_eSPI](https://github.com/Bodmer/TFT_eSPI) display library by Bodmer and the [lvgl](https://lvgl.io/) grafics library by kisvegabor. Make sure that the tft matches the logic voltage of your mcu or use a SPI capable logic level voltage converter.
+The UI of the OpenScaleRemote Transmitter is build with [SquareLine studio](https://squareline.io/) running on a [2,8 inch ILI9488](https://www.az-delivery.de/en/products/2-8-zoll-lcd-tft-touch-display) based tft witch capacitive touch. It uses the [TFT_eSPI](https://github.com/Bodmer/TFT_eSPI) display library by Bodmer and the [lvgl](https://lvgl.io/) grafics library by kisvegabor. Make sure that the tft matches the logic voltage of your mcu or use a SPI capable logic level voltage converter.
 Due too the lack of SRAM on the Arduino MEGA 2560, the SquareLineUI based UI is not available for this mcu.
 
 ILI9488 TFT + Touch | Arduino MEGA 2560 | ESP32WROOM32 | Teensy4.1
