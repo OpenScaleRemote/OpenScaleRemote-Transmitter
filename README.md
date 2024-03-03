@@ -1,11 +1,12 @@
 # OpenScaleRemote Transmitter
-  
+
 OpenScaleRemote is a open source platform for building your own RC Transmitter and Reciever. The Transmitter can be based on lots of different boards, including various arduino, esp32 and teensy boards. The RP2040 is currently not supported.
+
 Board function | Arduino MEGA 2560 | ESP32WROOM32 | Teensy4.1
 -------- | -------- | -------- | --------
 pin_led | LED_BUILTIN | 2 | not set yet
-  
-OpenScaleRemote uses an RFM95W LoRa module build by HopeRF. You can choose between different types of RFM95W boards. We recommend the [adafruit version](https://www.adafruit.com/product/3072), but any other board can be used too. Just make shure that it matches the logic voltage of your mcu or use a SPI capable logic level voltage converter.
+
+The OpenScaleRemote uses an RFM95W LoRa module build by HopeRF. You can choose between different types of RFM95W boards. We recommend the [adafruit version](https://www.adafruit.com/product/3072), but any other board can be used too. Just make shure that it matches the logic voltage of your mcu or use a SPI capable logic level voltage converter.
 
 RFM95W | Arduino MEGA 2560 | ESP32WROOM32 | Teensy4.1
 -------- | -------- | -------- | --------
@@ -16,18 +17,22 @@ rfm95w_cs | 53 | 5 | not set yet
 rfm95w_reset | 10 | 14 | not set yet
 rfm95w_dio0 | 2 | 2 | not set yet
 
+The UI of the OpenScaleRemote Transmitter is based on SquareLineUI running on a [2,8 inch ILI9488 based tft witch a capacitive touch screen](https://www.az-delivery.de/en/products/2-8-zoll-lcd-tft-touch-display). It uses the TFT_eSPI display library by Bodmer and the lvgl grafics library by kisvegabor. Due too the lack of SRAM on the Arduino MEGA 2560, the SquareLineUI based UI is not available for this mcu.
+
 ILI9488 TFT + Touch | Arduino MEGA 2560 | ESP32WROOM32 | Teensy4.1
 -------- | -------- | -------- | --------
-lcd_mosi | 51 | 23 | not set yet
-lcd_miso | 50 | 19 | not set yet
-lcd_sck | 52 | 18 | not set yet
-lcd_cs | not set yet | 17 | not set yet
-lcd_reset | not set yet | 16 | not set yet
-lcd_dc | not set yet | 12 | not set yet
-touch_mosi | 51 | 23 | not set yet
-touch_miso | 50 | 19 | not set yet
-touch_sck | 52 | 18 | not set yet
-touch_cs | not set yet | 4 | not set yet
+lcd_mosi | not available | 23 | not set yet
+lcd_miso | not available | 19 | not set yet
+lcd_sck | not available | 18 | not set yet
+lcd_cs | not available | 17 | not set yet
+lcd_reset | not available | 16 | not set yet
+lcd_dc | not available | 12 | not set yet
+touch_mosi | not available | 23 | not set yet
+touch_miso | not available | 19 | not set yet
+touch_sck | not available | 18 | not set yet
+touch_cs | not available | 4 | not set yet
+
+The OpenScaleRemote Transmitter uses a SD-Card to store model spezific data such as name, servo directions and servo limits.
 
 SD-Card | Arduino MEGA 2560 | ESP32WROOM32 | Teensy4.1
 -------- | -------- | -------- | --------
