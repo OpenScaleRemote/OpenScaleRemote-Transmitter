@@ -13,11 +13,20 @@ rfm95w_sck | 52 | 18 | not set yet
 rfm95w_cs | 53 | 5 | not set yet
 rfm95w_reset | 10 | 14 | not set yet
 rfm95w_dio0 | 2 | 2 | not set yet
+
+ILI9488 TFT + Touch | Arduino MEGA 2560 | ESP32WROOM32 | Teensy4.1
+-------- | -------- | -------- | --------
 lcd_cs | not set yet | 17 | not set yet
 lcd_reset | not set yet | 16 | not set yet
 lcd_dc | not set yet | 12 | not set yet
 touch_cs | not set yet | 4 | not set yet
+
+SD-Card | Arduino MEGA 2560 | ESP32WROOM32 | Teensy4.1
+-------- | -------- | -------- | --------
 sc_cs | not set yet | 13 | not set yet
+
+Input channels | Arduino MEGA 2560 | ESP32WROOM32 | Teensy4.1
+-------- | -------- | -------- | --------
 pin_ch0 | A0 | 36 | not set yet
 pin_ch1 | A1 | 39 | not set yet
 pin_ch2 | A2 | 34 | not set yet
