@@ -10,6 +10,7 @@ Due to the lack of GPIO based interrupts the RP2040 running the arduino core by 
 Board function | Arduino MEGA 2560 | ESP32WROOM32 | Teensy4.1
 -------- | -------- | -------- | --------
 pin_led | LED_BUILTIN | 2 | not defined
+bat_voltage | not defined | 15 | not defined
 
 ## Wireless communication
 
@@ -66,7 +67,7 @@ pin_ch5 | A5 | 33 | not defined
 pin_ch6 | A6 | 25 | not defined
 pin_ch7 | A7 | 26 | not defined
 pin_ch8 | A8 | 27 | not defined
-pin_ch9 | A9 | 15 | not defined
+pin_ch9 | A9 | not available | not defined
 pin_ch10 | A10 | not available | not defined
 pin_ch11 | A11 | not available | not defined
 pin_ch12 | A12 | not available | not defined
