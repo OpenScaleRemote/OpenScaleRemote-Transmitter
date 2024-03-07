@@ -17,7 +17,7 @@
 
 
 #ifdef arduino_mega_2560
-  #define pin_led LED_BUILDIN
+  #define pin_led LED_BUILTIN
 
   #define rfm95w_mosi 51
   #define rfm95w_miso 50
@@ -26,13 +26,13 @@
   #define rfm95w_reset 10
   #define rfm95w_dio0 2
 
-  #define lcd_cs
-  #define lcd_reset
-  #define lcd_dc
+  #define lcd_cs 48
+  #define lcd_reset 49
+  #define lcd_dc 46
 
-  #define touch_cs
+  #define touch_cs 47
 
-  #define sd_cs
+  #define sd_cs 44
 
   #define pin_ch0 A0
   #define pin_ch1 A1
