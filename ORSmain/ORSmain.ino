@@ -9,11 +9,13 @@
 #include "SetupMethods.h"
 #include "WirelessCommunication.h"
 #include "SignalProcessing.h"
+#include "IO_PCF8575.h"
 
 //Constructors
 SignalProcessing sp;
 SetupMethods sm;
 WirelessCommunication wc;
+PCF8575 pcf8575;
 
 //########## setup code ##########
 void setup() {
@@ -30,6 +32,9 @@ void setup() {
   //LORA setup
   wc.loraSetup();
 
+  //PCF8575 setup
+  pcf8575.pcf8575setup();
+
   //preparing the index in mafData
   for(int i=0; i<14; i++) {
     mafData[i][0] = 2;
@@ -42,7 +47,10 @@ void loop() {
   digitalWrite(pin_led, blink);
   blink = !blink;
 
-  //read data from adc
+  //read data
+  sp.readInternalADC(controlData);
+  pcf8575.readpcf8575(controlData);
+
   //mapping data from analog range to servo range with limits, zeropoint, deadzone and invert
   sp.processData(mafData, controlData, servoData, channelData);
 

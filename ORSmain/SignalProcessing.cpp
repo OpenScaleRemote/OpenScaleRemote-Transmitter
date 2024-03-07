@@ -1,5 +1,65 @@
 #include "SignalProcessing.h"
 
+void SignalProcessing::readInternalADC(int arrayControlData[30][6]) {
+  #ifdef ch0_active
+    arrayControlData[0][0] = analogRead(pin_ch0);
+  #endif
+
+  #ifdef ch1_active
+    arrayControlData[1][0] = analogRead(pin_ch1);
+  #endif
+
+  #ifdef ch2_active
+    arrayControlData[2][0] = analogRead(pin_ch2);
+  #endif
+
+  #ifdef ch3_active
+    arrayControlData[3][0] = analogRead(pin_ch3);
+  #endif
+
+  #ifdef ch4_active
+    arrayControlData[4][0] = analogRead(pin_ch4);
+  #endif
+
+  #ifdef ch5_active
+    arrayControlData[5][0] = analogRead(pin_ch5);
+  #endif
+
+  #ifdef ch6_active
+    arrayControlData[6][0] = analogRead(pin_ch6);
+  #endif
+
+  #ifdef ch7_active
+    arrayControlData[7][0] = analogRead(pin_ch7);
+  #endif
+
+  #ifdef ch8_active
+    arrayControlData[8][0] = analogRead(pin_ch8);
+  #endif
+
+  #ifdef ch9_active
+    arrayControlData[9][0] = analogRead(pin_ch9);
+  #endif
+
+  #ifdef ch10_active
+    arrayControlData[10][0] = analogRead(pin_ch10);
+  #endif
+
+  #ifdef ch11_active
+    arrayControlData[11][0] = analogRead(pin_ch11);
+  #endif
+
+  #ifdef ch12_active
+    arrayControlData[12][0] = analogRead(pin_ch12);
+  #endif
+
+  #ifdef ch13_active
+    arrayControlData[13][0] = analogRead(pin_ch13);
+  #endif
+}
+
+
+
 int SignalProcessing::mafFiltering(int chNum, int sensorValue, int arrayMafData[14][2+windowSize]) {                     // index (0), sum (1), readings(2 bis 1+windowSize)
   int z;
   arrayMafData[chNum][1] = arrayMafData[chNum][1] - arrayMafData[chNum][arrayMafData[chNum][0]];        // Remove the oldest entry from the sum
@@ -101,7 +161,6 @@ void SignalProcessing::processData(int arrayMafData[14][2+windowSize], int array
   #ifdef ch0_active
   {
     byte ch=0;
-    arrayControlData[ch][0] = analogRead(pin_ch0);
     arrayControlData[ch][5] = mafFiltering(ch, arrayControlData[ch][0], arrayMafData);
     #ifdef ch0_analogLinear
       arrayChannelData[ch] = analogLinear(ch, arrayControlData, arrayServoData);
@@ -112,7 +171,6 @@ void SignalProcessing::processData(int arrayMafData[14][2+windowSize], int array
   #ifdef ch1_active
   {
     byte ch=1;
-    arrayControlData[ch][0] = analogRead(pin_ch1);
     arrayControlData[ch][5] = mafFiltering(ch, arrayControlData[ch][0], arrayMafData);
     #ifdef ch1_analogLinear
       arrayChannelData[ch] = analogLinear(ch, arrayControlData, arrayServoData);
@@ -123,7 +181,6 @@ void SignalProcessing::processData(int arrayMafData[14][2+windowSize], int array
   #ifdef ch2_active
   {
     byte ch=2;
-    arrayControlData[ch][0] = analogRead(pin_ch2);
     arrayControlData[ch][5] = mafFiltering(ch, arrayControlData[ch][0], arrayMafData);
     #ifdef ch2_analogLinear
       arrayChannelData[ch] = analogLinear(ch, arrayControlData, arrayServoData);
@@ -134,7 +191,6 @@ void SignalProcessing::processData(int arrayMafData[14][2+windowSize], int array
   #ifdef ch3_active
   {
     byte ch=3;
-    arrayControlData[ch][0] = analogRead(pin_ch3);
     arrayControlData[ch][5] = mafFiltering(ch, arrayControlData[ch][0], arrayMafData);
     #ifdef ch3_analogLinear
       arrayChannelData[ch] = analogLinear(ch, arrayControlData, arrayServoData);
@@ -145,7 +201,6 @@ void SignalProcessing::processData(int arrayMafData[14][2+windowSize], int array
   #ifdef ch4_active
   {
     byte ch=4;
-    arrayControlData[ch][0] = analogRead(pin_ch4);
     arrayControlData[ch][5] = mafFiltering(ch, arrayControlData[ch][0], arrayMafData);
     #ifdef ch4_analogLinear
       arrayChannelData[ch] = analogLinear(ch, arrayControlData, arrayServoData);
@@ -156,7 +211,6 @@ void SignalProcessing::processData(int arrayMafData[14][2+windowSize], int array
   #ifdef ch5_active
   {
     byte ch=5;
-    arrayControlData[ch][0] = analogRead(pin_ch5);
     arrayControlData[ch][5] = mafFiltering(ch, arrayControlData[ch][0], arrayMafData);
     #ifdef ch5_analogLinear
       arrayChannelData[ch] = analogLinear(ch, arrayControlData, arrayServoData);
@@ -167,7 +221,6 @@ void SignalProcessing::processData(int arrayMafData[14][2+windowSize], int array
   #ifdef ch6_active
   {
     byte ch=6;
-    arrayControlData[ch][0] = analogRead(pin_ch6);
     arrayControlData[ch][5] = mafFiltering(ch, arrayControlData[ch][0], arrayMafData);
     #ifdef ch6_analogLinear
       arrayChannelData[ch] = analogLinear(ch, arrayControlData, arrayServoData);
@@ -178,7 +231,6 @@ void SignalProcessing::processData(int arrayMafData[14][2+windowSize], int array
   #ifdef ch7_active
   {
     byte ch=7;
-    arrayControlData[ch][0] = analogRead(pin_ch7);
     arrayControlData[ch][5] = mafFiltering(ch, arrayControlData[ch][0], arrayMafData);
     #ifdef ch7_analogLinear
       arrayChannelData[ch] = analogLinear(ch, arrayControlData, arrayServoData);
@@ -189,7 +241,6 @@ void SignalProcessing::processData(int arrayMafData[14][2+windowSize], int array
   #ifdef ch8_active
   {
     byte ch=8;
-    arrayControlData[ch][0] = analogRead(pin_ch8);
     arrayControlData[ch][5] = mafFiltering(ch, arrayControlData[ch][0], arrayMafData);
     #ifdef ch8_analogLinear
       arrayChannelData[ch] = analogLinear(ch, arrayControlData, arrayServoData);
@@ -200,7 +251,6 @@ void SignalProcessing::processData(int arrayMafData[14][2+windowSize], int array
   #ifdef ch9_active
   {
     byte ch=9;
-    arrayControlData[ch][0] = analogRead(pin_ch9);
     arrayControlData[ch][5] = mafFiltering(ch, arrayControlData[ch][0], arrayMafData);
     #ifdef ch9_analogLinear
       arrayChannelData[ch] = analogLinear(ch, arrayControlData, arrayServoData);
@@ -211,7 +261,6 @@ void SignalProcessing::processData(int arrayMafData[14][2+windowSize], int array
   #ifdef ch10_active
   {
     byte ch=10;
-    arrayControlData[ch][0] = analogRead(pin_ch10);
     arrayControlData[ch][5] = mafFiltering(ch, arrayControlData[ch][0], arrayMafData);
     #ifdef ch10_analogLinear
       arrayChannelData[ch] = analogLinear(ch, arrayControlData, arrayServoData);
@@ -222,7 +271,6 @@ void SignalProcessing::processData(int arrayMafData[14][2+windowSize], int array
   #ifdef ch11_active
   {
     byte ch=11;
-    arrayControlData[ch][0] = analogRead(pin_ch11);
     arrayControlData[ch][5] = mafFiltering(ch, arrayControlData[ch][0], arrayMafData);
     #ifdef ch11_analogLinear
       arrayChannelData[ch] = analogLinear(ch, arrayControlData, arrayServoData);
@@ -233,7 +281,6 @@ void SignalProcessing::processData(int arrayMafData[14][2+windowSize], int array
   #ifdef ch12_active
   {
     byte ch=12;
-    arrayControlData[ch][0] = analogRead(pin_ch12);
     arrayControlData[ch][5] = mafFiltering(ch, arrayControlData[ch][0], arrayMafData);
     #ifdef ch12_analogLinear
       arrayChannelData[ch] = analogLinear(ch, arrayControlData, arrayServoData);
@@ -244,7 +291,6 @@ void SignalProcessing::processData(int arrayMafData[14][2+windowSize], int array
   #ifdef ch13_active
   {
     byte ch=13;
-    arrayControlData[ch][0] = analogRead(pin_ch13);
     arrayControlData[ch][5] = mafFiltering(ch, arrayControlData[ch][0], arrayMafData);
     #ifdef ch13_analogLinear
       arrayChannelData[ch] = analogLinear(ch, arrayControlData, arrayServoData);
