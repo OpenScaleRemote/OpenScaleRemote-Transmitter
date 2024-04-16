@@ -37,7 +37,6 @@ void setup() {
 
   //serial setup
   Serial.begin(115200);
-  while (!Serial);
   delay(2000);
   
   //LORA setup
