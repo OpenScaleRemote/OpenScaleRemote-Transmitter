@@ -9,63 +9,170 @@
 
 
 
-//########## pins - RFM96W ##########
-/*
-Set matching pins for your microcontroller.
-*/
-
-#define rfm95w_mosi 51
-#define rfm95w_miso 50
-#define rfm95w_sck 52
-#define rfm95w_cs 53
-#define rfm95w_reset 10
-#define rfm95w_dio0 2
+//########## mcu ##########
+//#define arduino_mega_2560
+#define esp32_wroom
+//#define custom_mcu
 
 
 
-//########## pins - analog channels ##########
-/*
-Set matching pins for your microcontroller.
-*/
+#ifdef arduino_mega_2560
+  #define pin_led LED_BUILTIN
 
-#define pin_ch0 A0
-#define pin_ch1 A1
-#define pin_ch2 A2
-#define pin_ch3 A3
-#define pin_ch4 A4
-#define pin_ch5 A5
-#define pin_ch6 A6
-#define pin_ch7 A7
-#define pin_ch8 A8
-#define pin_ch9 A9
-#define pin_ch10 A10
-#define pin_ch11 A11
-#define pin_ch12 A12
-#define pin_ch13 A13
+  #define rfm95w_mosi 51
+  #define rfm95w_miso 50
+  #define rfm95w_sck 52
+  #define rfm95w_cs 53
+  #define rfm95w_reset 10
+  #define rfm95w_dio0 2
+
+  #define lcd_cs 48
+  #define lcd_reset 49
+  #define lcd_dc 46
+
+  #define touch_cs 47
+
+  #define sd_cs 44
+
+  #define pin_ch0 A0
+  #define pin_ch1 A1
+  #define pin_ch2 A2
+  #define pin_ch3 A3
+  #define pin_ch4 A4
+  #define pin_ch5 A5
+  #define pin_ch6 A6
+  #define pin_ch7 A7
+  #define pin_ch8 A8
+  #define pin_ch9 A9
+  #define pin_ch10 A10
+  #define pin_ch11 A11
+  #define pin_ch12 A12
+  #define pin_ch13 A13
+
+  #define pin_ch14 22
+  #define pin_ch15 23
+  #define pin_ch16 24
+  #define pin_ch17 25
+  #define pin_ch18 26
+  #define pin_ch19 27
+  #define pin_ch20 28
+  #define pin_ch21 29
+  #define pin_ch22 30
+  #define pin_ch23 31
+  #define pin_ch24 32
+  #define pin_ch25 33
+  #define pin_ch26 34
+  #define pin_ch27 35
+  #define pin_ch28 36
+  #define pin_ch29 37
+#endif
+
+#ifdef esp32_wroom
+  #define pin_led 2
+
+  #define rfm95w_mosi 23
+  #define rfm95w_miso 19
+  #define rfm95w_sck 18
+  #define rfm95w_cs 5
+  #define rfm95w_reset 14
+  #define rfm95w_dio0 2
+
+  #define lcd_cs 17
+  #define lcd_reset 16
+  #define lcd_dc 12
+
+  #define touch_cs 4
+
+  #define sd_cs 13
+
+  #define pin_ch0 36
+  #define pin_ch1 39
+  #define pin_ch2 34
+  #define pin_ch3 35
+  #define pin_ch4 32
+  #define pin_ch5 33
+  #define pin_ch6 25
+  #define pin_ch7 26
+  #define pin_ch8 27
+  #define pin_ch9 15
+
+  #define pin_ch14
+  #define pin_ch15
+  #define pin_ch16
+  #define pin_ch17
+  #define pin_ch18
+  #define pin_ch19
+  #define pin_ch20
+  #define pin_ch21
+  #define pin_ch22
+  #define pin_ch23
+  #define pin_ch24
+  #define pin_ch25
+  #define pin_ch26
+  #define pin_ch27
+  #define pin_ch28
+  #define pin_ch29
+#endif
+
+#ifdef custom_mcu
+  //########## pins - RFM96W ##########
+  /*
+  Set matching pins for your microcontroller.
+  */
+
+  #define rfm95w_mosi 51
+  #define rfm95w_miso 50
+  #define rfm95w_sck 52
+  #define rfm95w_cs 53
+  #define rfm95w_reset 10
+  #define rfm95w_dio0 2
 
 
 
-//########## pins - digital channels ##########
-/*
-Set matching pins for your microcontroller.
-*/
+  //########## pins - analog channels ##########
+  /*
+  Set matching pins for your microcontroller.
+  */
 
-#define pin_ch14 22
-#define pin_ch15 23
-#define pin_ch16 24
-#define pin_ch17 25
-#define pin_ch18 26
-#define pin_ch19 27
-#define pin_ch20 28
-#define pin_ch21 29
-#define pin_ch22 30
-#define pin_ch23 31
-#define pin_ch24 32
-#define pin_ch25 33
-#define pin_ch26 34
-#define pin_ch27 35
-#define pin_ch28 36
-#define pin_ch29 37
+  #define pin_ch0 A0
+  #define pin_ch1 A1
+  #define pin_ch2 A2
+  #define pin_ch3 A3
+  #define pin_ch4 A4
+  #define pin_ch5 A5
+  #define pin_ch6 A6
+  #define pin_ch7 A7
+  #define pin_ch8 A8
+  #define pin_ch9 A9
+  #define pin_ch10 A10
+  #define pin_ch11 A11
+  #define pin_ch12 A12
+  #define pin_ch13 A13
+
+
+
+  //########## pins - digital channels ##########
+  /*
+  Set matching pins for your microcontroller.
+  */
+
+  #define pin_ch14 22
+  #define pin_ch15 23
+  #define pin_ch16 24
+  #define pin_ch17 25
+  #define pin_ch18 26
+  #define pin_ch19 27
+  #define pin_ch20 28
+  #define pin_ch21 29
+  #define pin_ch22 30
+  #define pin_ch23 31
+  #define pin_ch24 32
+  #define pin_ch25 33
+  #define pin_ch26 34
+  #define pin_ch27 35
+  #define pin_ch28 36
+  #define pin_ch29 37
+#endif
 
 
 
@@ -86,11 +193,11 @@ Set matching pins for your microcontroller.
   //#define ch0_analogLinear
 
 //channel 1
-  //#define ch1_active
-  //#define ch1_fast1
+  #define ch1_active
+  #define ch1_fast1
   //#define ch1_fast2
   //#define ch1_slow
-  //#define ch1_analogLinear
+  #define ch1_analogLinear
 
 //channel 2
   //#define ch2_active

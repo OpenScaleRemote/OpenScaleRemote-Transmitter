@@ -31,7 +31,7 @@ TFT_eSPI tft = TFT_eSPI(screenHeight, screenWidth); /* TFT instance */
 //########## setup code ##########
 void setup() {
   //GPIO setup
-  //pinMode(2, OUTPUT);
+  pinMode(pin_led, OUTPUT);
   sm.setupDigitalPins();
   sm.setupAnalogPins();
 
@@ -95,8 +95,8 @@ void setup() {
 //########## loop code ##########
 void loop() {
   //blink the onboard led
-  //digitalWrite(10, blink);
-  //blink = !blink;
+  digitalWrite(pin_led, blink);
+  blink = !blink;
 
   //read data from adc
   //mapping data from analog range to servo range with limits, zeropoint, deadzone and invert
